@@ -14,20 +14,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.edv.report.bot;
-
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+package com.endeavourmining.reportbot;
 
 /**
- * Tests for {@link Main}.
+ * Entrance.
  *
  * @since 0.1
  */
-final class MainTest {
+@SuppressWarnings({"PMD.ProhibitPublicStaticMethods", "PMD.SystemPrintln"})
+public final class Main {
 
-    @Test
-    void shouldAnswerWithTrue() {
-        Assertions.assertTrue(true);
+    /**
+     * Ctor.
+     */
+    private Main() {
+        // Nothing here
+    }
+
+    /**
+     * Main function.
+     * @param args Arguments
+     */
+    public static void main(final String[] args) {
+        System.out.println("Hello World!");
     }
 }

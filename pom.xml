@@ -22,10 +22,10 @@ SOFTWARE.
     <artifactId>parent</artifactId>
     <version>0.57.2</version>
   </parent>
-  <groupId>com.endeavourmining.lab</groupId>
+  <groupId>com.endeavourmining</groupId>
   <artifactId>report-bot</artifactId>
   <version>1.0-SNAPSHOT</version>
-  <description>Report bot</description>
+  <description>Report Bot</description>
   <url>https://www.endeavourmining.com</url>
   <inceptionYear>2022</inceptionYear>
   <organization>
@@ -35,7 +35,7 @@ SOFTWARE.
   <licenses>
     <license>
       <name>EDV License</name>
-      <url>https://github.com/edv-lab/report-bot/blob/master/LICENSE.txt</url>
+      <url>https://github.com/endeavourmining/report-bot/blob/master/LICENSE.txt</url>
     </license>
   </licenses>
   <developers>
@@ -54,12 +54,12 @@ SOFTWARE.
   </developers>
   <issueManagement>
     <system>GitHub</system>
-    <url>https://github.com/edv-lab/report-bot/issues</url>
+    <url>https://github.com/endeavourmining/report-bot/issues</url>
   </issueManagement>
   <scm>
-    <connection>scm:git:git://github.com/edv-lab/report-bot.git</connection>
-    <developerConnection>scm:git:git://github.com:edv-lab/report-bot.git</developerConnection>
-    <url>http://github.com/edv-lab/report-bot/tree/master</url>
+    <connection>scm:git:git://github.com/endeavourmining/report-bot.git</connection>
+    <developerConnection>scm:git:git://github.com:endeavourmining/report-bot.git</developerConnection>
+    <url>http://github.com/endeavourmining/report-bot/tree/master</url>
   </scm>
   <profiles>
     <profile>
@@ -113,7 +113,7 @@ SOFTWARE.
               </execution>
             </executions>
             <configuration>
-              <mainClass>com.edv.report.bot.Main</mainClass>
+              <mainClass>com.endeavourmining.reportbot.Main</mainClass>
               <!-- your main class -->
               <cleanupDaemonThreads>false</cleanupDaemonThreads>
             </configuration>

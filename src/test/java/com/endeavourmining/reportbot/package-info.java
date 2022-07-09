@@ -16,8 +16,8 @@
  */
 
 /**
- * Base Bot classes.
+ * Test for base Bot classes.
  *
  * @since 0.1
  */
-package com.edv.report.bot;
+package com.endeavourmining.reportbot;
