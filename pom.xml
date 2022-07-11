@@ -61,6 +61,24 @@ SOFTWARE.
     <developerConnection>scm:git:git://github.com:endeavourmining/report-bot.git</developerConnection>
     <url>http://github.com/endeavourmining/report-bot/tree/master</url>
   </scm>
+  <dependencies>
+    <dependency>
+      <groupId>com.sun.mail</groupId>
+      <artifactId>javax.mail</artifactId>
+      <version>1.6.2</version>
+    </dependency>
+    <dependency>
+      <groupId>com.icegreen</groupId>
+      <artifactId>greenmail-junit5</artifactId>
+      <version>1.6.9</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.vintage</groupId>
+      <artifactId>junit-vintage-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
   <build>
     <pluginManagement>
       <plugins>

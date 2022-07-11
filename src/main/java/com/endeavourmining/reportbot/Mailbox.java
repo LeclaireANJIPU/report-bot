@@ -19,37 +19,16 @@ package com.endeavourmining.reportbot;
 import java.io.IOException;
 
 /**
- * Entrance.
+ * Mail box.
  *
  * @since 0.1
  */
-@SuppressWarnings({"PMD.ProhibitPublicStaticMethods", "PMD.SystemPrintln"})
-public final class Main {
+public interface Mailbox {
 
     /**
-     * Ctor.
+     * Number of unread emails.
+     * @return Total
+     * @throws IOException If fails
      */
-    private Main() {
-        // Nothing here
-    }
-
-    /**
-     * Main function.
-     * @param args Arguments
-     * @throws IOException fails
-     * @checkstyle MagicNumberCheck (10 lines)
-     */
-    public static void main(final String[] args) throws IOException {
-        System.out.println(
-            String.format(
-                "Number of emails : %s",
-                new UnreadMailbox(
-                    "outlook.office365.com",
-                    993,
-                    "report.bot@endeavourmining.com",
-                    "Rty789Xc"
-                ).count()
-            )
-        );
-    }
+    int count() throws IOException;
 }
