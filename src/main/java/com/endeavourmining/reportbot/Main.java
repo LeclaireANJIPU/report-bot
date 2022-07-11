@@ -17,6 +17,7 @@
 package com.endeavourmining.reportbot;
 
 import java.io.IOException;
+import java.nio.file.Paths;
 
 /**
  * Entrance.
@@ -36,18 +37,22 @@ public final class Main {
     /**
      * Main function.
      * @param args Arguments
-     * @throws IOException fails
+     * @throws IOException If fails
      * @checkstyle MagicNumberCheck (10 lines)
      */
     public static void main(final String[] args) throws IOException {
+        final MailSettings settings = new MailSettingsFromPath(
+            Paths.get(System.getProperty("user.dir"), "receive_mailbox_settings.yml")
+        );
         System.out.println(
             String.format(
                 "Number of emails : %s",
                 new UnreadMailbox(
-                    "outlook.office365.com",
-                    993,
-                    "report.bot@endeavourmining.com",
-                    "Rty789Xc"
+                    settings.host(),
+                    settings.protocol(),
+                    settings.port(),
+                    settings.login(),
+                    settings.password()
                 ).count()
             )
         );

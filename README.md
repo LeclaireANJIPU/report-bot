@@ -16,6 +16,19 @@
 
 Report Bot is a bot that automates data integration of an Excel report file sent by email into a Power BI dashboard.
 
+## Mailbox configuration
+Put at the root folder, the configuration file `mailbox_settings.yml` with content:
+```yaml
+mailbox:
+  host: localhost
+  protocol: imaps # imap, pop3, pop3s, etc. 
+  port: 993
+  credentials:
+    login: foo
+    address: foo@example.com
+    password: 123
+```
+
 ## How to contribute
 
 Please read [contributing rules](https://github.com/endeavourmining/report-bot/blob/master/CONTRIBUTING.md).

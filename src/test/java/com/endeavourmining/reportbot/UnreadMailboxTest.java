@@ -17,13 +17,9 @@
 package com.endeavourmining.reportbot;
 
 import com.icegreen.greenmail.user.GreenMailUser;
-import com.icegreen.greenmail.util.DummySSLSocketFactory;
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
 import java.io.IOException;
-import java.net.ServerSocket;
-import java.security.Security;
-import java.util.Random;
 import javax.mail.Message;
 import javax.mail.Session;
 import javax.mail.Transport;
@@ -50,13 +46,10 @@ final class UnreadMailboxTest {
 
     @BeforeEach
     void setUp() throws IOException {
-        Security.setProperty(
-            "ssl.SocketFactory.provider", DummySSLSocketFactory.class.getName()
-        );
         this.server = new GreenMail(
             new ServerSetup[] {
-                ServerSetup.SMTPS.withPort(UnreadMailboxTest.availablePort()),
-                ServerSetup.IMAPS.withPort(UnreadMailboxTest.availablePort()),
+                ServerSetup.SMTP.withPort(new AvailablePort().intValue()),
+                ServerSetup.IMAP.withPort(new AvailablePort().intValue()),
             }
         );
         this.server.start();
@@ -69,7 +62,7 @@ final class UnreadMailboxTest {
             "bar",
             "pwd"
         );
-        final Session session = this.server.getSmtps().createSession();
+        final Session session = this.server.getSmtp().createSession();
         final Message msg = new MimeMessage(session);
         msg.setFrom(new InternetAddress("foo@example.com"));
         msg.addRecipient(Message.RecipientType.TO, new InternetAddress(user.getEmail()));
@@ -78,8 +71,8 @@ final class UnreadMailboxTest {
         Transport.send(msg);
         MatcherAssert.assertThat(
             new UnreadMailbox(
-                this.server.getImaps().getBindTo(), this.server.getImaps().getPort(),
-                user.getLogin(), user.getPassword()
+                this.server.getImap().getBindTo(), this.server.getImap().getProtocol(),
+                this.server.getImap().getPort(), user.getLogin(), user.getPassword()
             ).count(),
             new IsEqual<>(1)
         );
@@ -88,22 +81,5 @@ final class UnreadMailboxTest {
     @AfterEach
     void tearDown() {
         this.server.stop();
-    }
-
-    /**
-     * Get available port.
-     * @return Port
-     * @throws IOException If fails
-     */
-    private static int availablePort() throws IOException {
-        final int min = 1000;
-        final int max = 2000;
-        final Random random = new Random();
-        do {
-            try (ServerSocket srv =
-                new ServerSocket(random.nextInt(max - min + 1) + max)) {
-                return srv.getLocalPort();
-            }
-        } while (true);
     }
 }

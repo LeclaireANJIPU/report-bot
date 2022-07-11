@@ -37,7 +37,7 @@ public final class UnreadMailbox implements Mailbox {
     /**
      * Username or mail address.
      */
-    private final String user;
+    private final String login;
 
     /**
      * Password.
@@ -50,6 +50,11 @@ public final class UnreadMailbox implements Mailbox {
     private final String host;
 
     /**
+     * Protocol.
+     */
+    private final String protocol;
+
+    /**
      * Port.
      */
     private final int port;
@@ -57,18 +62,20 @@ public final class UnreadMailbox implements Mailbox {
     /**
      * Ctor.
      * @param host Host
+     * @param protocol Protocol (imap, pop3, etc.)
      * @param port Port
-     * @param user Username or mail address
+     * @param login Login
      * @param password Password
      * @checkstyle ParameterNumberCheck (10 lines)
      */
     public UnreadMailbox(
-        final String host, final int port,
-        final String user, final String password
+        final String host, final String protocol, final int port,
+        final String login, final String password
     ) {
         this.host = host;
+        this.protocol = protocol;
         this.port = port;
-        this.user = user;
+        this.login = login;
         this.password = password;
     }
 
@@ -76,24 +83,32 @@ public final class UnreadMailbox implements Mailbox {
     @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     public int count() throws IOException {
         final Properties props = System.getProperties();
-        props.setProperty("mail.imaps.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-        props.setProperty("mail.imaps.socketFactory.fallback", "false");
-        props.setProperty("mail.imaps.port", String.valueOf(this.port));
-        props.setProperty("mail.imaps.socketFactory.port", String.valueOf(this.port));
-        props.put("mail.imaps.host", this.host);
+        props.setProperty(
+            String.format("mail.%s.socketFactory.fallback", this.protocol), "false"
+        );
+        props.setProperty(
+            String.format("mail.%s.port", this.protocol), String.valueOf(this.port)
+        );
+        props.setProperty(
+            String.format("mail.%s.socketFactory.port", this.protocol),
+            String.valueOf(this.port)
+        );
+        props.put(
+            String.format("mail.%s.host", this.protocol), this.host
+        );
         final Session session = Session.getInstance(
             props,
             new javax.mail.Authenticator() {
                 protected PasswordAuthentication getPasswordAuthentication() {
                     return new PasswordAuthentication(
-                        UnreadMailbox.this.user,
+                        UnreadMailbox.this.login,
                         UnreadMailbox.this.password
                     );
                 }
             }
         );
         try {
-            final Store store = session.getStore("imaps");
+            final Store store = session.getStore(this.protocol);
             store.connect();
             final Folder folder = store.getFolder("INBOX");
             folder.open(Folder.READ_WRITE);
