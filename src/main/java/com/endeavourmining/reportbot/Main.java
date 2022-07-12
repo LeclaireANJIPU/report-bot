@@ -41,18 +41,19 @@ public final class Main {
      * @checkstyle MagicNumberCheck (10 lines)
      */
     public static void main(final String[] args) throws IOException {
-        final MailSettings settings = new MailSettingsFromPath(
-            Paths.get(System.getProperty("user.dir"), "receive_mailbox_settings.yml")
+        final Settings settings = new SettingsFromPath(
+            Paths.get(System.getProperty("user.dir"), "settings.yml")
         );
+        final MailSettings msettings = settings.mailSettings();
         System.out.println(
             String.format(
                 "Number of emails : %s",
-                new UnreadMailbox(
-                    settings.host(),
-                    settings.protocol(),
-                    settings.port(),
-                    settings.login(),
-                    settings.password()
+                new UnreadEmails(
+                    msettings.incomingMailServerSettings().host(),
+                    msettings.incomingMailServerSettings().protocol(),
+                    msettings.incomingMailServerSettings().port(),
+                    msettings.login(),
+                    msettings.password()
                 ).count()
             )
         );

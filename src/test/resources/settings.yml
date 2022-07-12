@@ -1,0 +1,14 @@
+settings:
+  mailbox:
+    address: foo@example.com
+    credentials:
+      login: foo
+      password: 123
+    smtp_server:
+      host: localhost
+      tls: true
+      port: 465
+    incoming_server:
+      host: localhost
+      protocol: imaps
+      port: 993

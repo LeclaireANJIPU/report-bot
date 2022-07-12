@@ -17,39 +17,15 @@
 package com.endeavourmining.reportbot;
 
 /**
- * Mail settings.
+ * App settings.
  *
  * @since 0.1
  */
-public interface MailSettings {
+public interface Settings {
 
     /**
-     * User login.
-     * @return Login
-     */
-    String login();
-
-    /**
-     * User mail address.
-     * @return Address
-     */
-    String mailAddress();
-
-    /**
-     * User password.
-     * @return Password
-     */
-    String password();
-
-    /**
-     * SMTP server settings.
+     * Mail settings.
      * @return Settings
      */
-    MailServerSettings smtpServerSettings();
-
-    /**
-     * Incoming mail server settings.
-     * @return Settings
-     */
-    MailServerSettings incomingMailServerSettings();
+    MailSettings mailSettings();
 }

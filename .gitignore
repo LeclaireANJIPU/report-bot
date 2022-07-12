@@ -5,5 +5,5 @@ target/
 .classpath
 .project
 .settings/**
-receive_mailbox_settings.yml
+/settings.yml
 .report-bot.iml

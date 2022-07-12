@@ -28,11 +28,11 @@ import javax.mail.Store;
 import javax.mail.search.FlagTerm;
 
 /**
- * Mailbox with only unread emails.
+ * Unread emails.
  *
  * @since 0.1
  */
-public final class UnreadMailbox implements Mailbox {
+public final class UnreadEmails implements Mailbox {
 
     /**
      * Username or mail address.
@@ -68,7 +68,7 @@ public final class UnreadMailbox implements Mailbox {
      * @param password Password
      * @checkstyle ParameterNumberCheck (10 lines)
      */
-    public UnreadMailbox(
+    public UnreadEmails(
         final String host, final String protocol, final int port,
         final String login, final String password
     ) {
@@ -101,8 +101,8 @@ public final class UnreadMailbox implements Mailbox {
             new javax.mail.Authenticator() {
                 protected PasswordAuthentication getPasswordAuthentication() {
                     return new PasswordAuthentication(
-                        UnreadMailbox.this.login,
-                        UnreadMailbox.this.password
+                        UnreadEmails.this.login,
+                        UnreadEmails.this.password
                     );
                 }
             }

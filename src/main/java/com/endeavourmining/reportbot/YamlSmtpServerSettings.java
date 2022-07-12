@@ -19,19 +19,14 @@ package com.endeavourmining.reportbot;
 import com.amihaiemil.eoyaml.YamlMapping;
 
 /**
- * Mail settings in YAML content.
+ * Smtp settings in YAML.
  *
  * @since 0.1
  */
-public final class YamlMailSettings implements MailSettings {
+public final class YamlSmtpServerSettings implements MailServerSettings {
 
     /**
-     * Credentials.
-     */
-    private static final String CREDENTIALS = "credentials";
-
-    /**
-     * YAML file content.
+     * YAML content.
      */
     private final YamlMapping content;
 
@@ -39,42 +34,32 @@ public final class YamlMailSettings implements MailSettings {
      * Ctor.
      * @param content YAML content
      */
-    public YamlMailSettings(final YamlMapping content) {
+    public YamlSmtpServerSettings(final YamlMapping content) {
         this.content = content;
     }
 
     @Override
-    public String login() {
-        return this.content.yamlMapping(
-            YamlMailSettings.CREDENTIALS
-        ).string("login");
+    public String host() {
+        return this.content.string("host");
     }
 
     @Override
-    public String mailAddress() {
-        return this.content.yamlMapping(
-            YamlMailSettings.CREDENTIALS
-        ).string("address");
+    public String protocol() {
+        final String protocol;
+        if (
+            Boolean.parseBoolean(
+                this.content.string("tls")
+            )
+        ) {
+            protocol = "smtp";
+        } else {
+            protocol = "smtps";
+        }
+        return protocol;
     }
 
     @Override
-    public String password() {
-        return this.content.yamlMapping(
-            YamlMailSettings.CREDENTIALS
-        ).string("password");
-    }
-
-    @Override
-    public MailServerSettings smtpServerSettings() {
-        return new YamlSmtpServerSettings(
-            this.content.yamlMapping("smtp_server")
-        );
-    }
-
-    @Override
-    public MailServerSettings incomingMailServerSettings() {
-        return new YamlIncomingMailServerSettings(
-            this.content.yamlMapping("incoming_server")
-        );
+    public int port() {
+        return this.content.integer("port");
     }
 }

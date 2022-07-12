@@ -32,12 +32,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link UnreadMailbox}.
+ * Test case for {@link UnreadEmails}.
  *
  * @since 0.1
  * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
-final class UnreadMailboxTest {
+final class UnreadEmailsTest {
 
     /**
      * Mail server.
@@ -70,7 +70,7 @@ final class UnreadMailboxTest {
         msg.setText("This is email for test 1 purpose.");
         Transport.send(msg);
         MatcherAssert.assertThat(
-            new UnreadMailbox(
+            new UnreadEmails(
                 this.server.getImap().getBindTo(), this.server.getImap().getProtocol(),
                 this.server.getImap().getPort(), user.getLogin(), user.getPassword()
             ).count(),

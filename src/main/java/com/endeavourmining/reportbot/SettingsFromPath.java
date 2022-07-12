@@ -23,56 +23,32 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
- * Mail settings from path.
+ * Settings from path.
  *
  * @since 0.1
  */
-public final class MailSettingsFromPath implements MailSettings {
+public final class SettingsFromPath implements Settings {
 
     /**
-     * Origin.
+     * YAML content.
      */
-    private final MailSettings origin;
+    private final YamlMapping content;
 
     /**
      * Ctor.
      * @param path Path
      * @throws IOException If fails
      */
-    public MailSettingsFromPath(final Path path) throws IOException {
-        this.origin = new YamlMailSettings(
-            MailSettingsFromPath.load(path)
+    public SettingsFromPath(final Path path) throws IOException {
+        this.content = SettingsFromPath.load(path);
+    }
+
+    @Override
+    public MailSettings mailSettings() {
+        return new YamlMailSettings(
+            this.content.yamlMapping("settings")
+                .yamlMapping("mailbox")
         );
-    }
-
-    @Override
-    public String login() {
-        return this.origin.login();
-    }
-
-    @Override
-    public String mailAddress() {
-        return this.origin.mailAddress();
-    }
-
-    @Override
-    public String password() {
-        return this.origin.password();
-    }
-
-    @Override
-    public String host() {
-        return this.origin.host();
-    }
-
-    @Override
-    public String protocol() {
-        return this.origin.protocol();
-    }
-
-    @Override
-    public int port() {
-        return this.origin.port();
     }
 
     /**
@@ -83,9 +59,8 @@ public final class MailSettingsFromPath implements MailSettings {
      */
     private static YamlMapping load(final Path path) throws IOException {
         if (!Files.exists(path)) {
-            new JavaResource("example/receive_mailbox_settings.yml").copy(path);
+            new JavaResource("example/settings.yml").copy(path);
         }
-        return Yaml.createYamlInput(path.toFile()).readYamlMapping()
-            .yamlMapping("mailbox");
+        return Yaml.createYamlInput(path.toFile()).readYamlMapping();
     }
 }
