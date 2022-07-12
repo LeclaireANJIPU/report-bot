@@ -17,6 +17,9 @@
 package com.endeavourmining.reportbot;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Properties;
 import javax.mail.Flags;
 import javax.mail.Folder;
@@ -60,6 +63,16 @@ public final class UnreadEmails implements Mailbox {
     private final int port;
 
     /**
+     * Emails fetched.
+     */
+    private boolean fetched;
+
+    /**
+     * List of messages.
+     */
+    private final List<Message> messages;
+
+    /**
      * Ctor.
      * @param host Host
      * @param protocol Protocol (imap, pop3, etc.)
@@ -77,49 +90,72 @@ public final class UnreadEmails implements Mailbox {
         this.port = port;
         this.login = login;
         this.password = password;
+        this.fetched = false;
+        this.messages = new LinkedList<>();
     }
 
     @Override
     @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     public int count() throws IOException {
-        final Properties props = System.getProperties();
-        props.setProperty(
-            String.format("mail.%s.socketFactory.fallback", this.protocol), "false"
-        );
-        props.setProperty(
-            String.format("mail.%s.port", this.protocol), String.valueOf(this.port)
-        );
-        props.setProperty(
-            String.format("mail.%s.socketFactory.port", this.protocol),
-            String.valueOf(this.port)
-        );
-        props.put(
-            String.format("mail.%s.host", this.protocol), this.host
-        );
-        final Session session = Session.getInstance(
-            props,
-            new javax.mail.Authenticator() {
-                protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication(
-                        UnreadEmails.this.login,
-                        UnreadEmails.this.password
-                    );
-                }
-            }
-        );
-        try {
-            final Store store = session.getStore(this.protocol);
-            store.connect();
-            final Folder folder = store.getFolder("INBOX");
-            folder.open(Folder.READ_WRITE);
-            final Message[] messages = folder.search(
-                new FlagTerm(new Flags(Flags.Flag.SEEN), false)
+        this.fetch();
+        return this.messages.size();
+    }
+
+    @Override
+    public Iterable<Message> iterate() throws IOException {
+        this.fetch();
+        return this.messages;
+    }
+
+    /**
+     * Fetch emails.
+     * @throws IOException If fails
+     */
+    private void fetch() throws IOException {
+        if (!this.fetched) {
+            final Properties props = System.getProperties();
+            props.setProperty(
+                String.format("mail.%s.socketFactory.fallback", this.protocol), "false"
             );
-            folder.close(false);
-            store.close();
-            return messages.length;
-        } catch (final MessagingException exe) {
-            throw new IOException(exe);
+            props.setProperty(
+                String.format("mail.%s.port", this.protocol), String.valueOf(this.port)
+            );
+            props.setProperty(
+                String.format("mail.%s.socketFactory.port", this.protocol),
+                String.valueOf(this.port)
+            );
+            props.put(
+                String.format("mail.%s.host", this.protocol), this.host
+            );
+            final Session session = Session.getInstance(
+                props,
+                new javax.mail.Authenticator() {
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(
+                            UnreadEmails.this.login,
+                            UnreadEmails.this.password
+                        );
+                    }
+                }
+            );
+            try {
+                final Store store = session.getStore(this.protocol);
+                store.connect();
+                final Folder folder = store.getFolder("INBOX");
+                folder.open(Folder.READ_WRITE);
+                this.messages.addAll(
+                    Arrays.asList(
+                        folder.search(
+                            new FlagTerm(new Flags(Flags.Flag.SEEN), false)
+                        )
+                    )
+                );
+                folder.close(false);
+                store.close();
+            } catch (final MessagingException exe) {
+                throw new IOException(exe);
+            }
+            this.fetched = true;
         }
     }
 }

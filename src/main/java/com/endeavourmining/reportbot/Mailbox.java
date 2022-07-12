@@ -17,6 +17,7 @@
 package com.endeavourmining.reportbot;
 
 import java.io.IOException;
+import javax.mail.Message;
 
 /**
  * Mail box.
@@ -31,4 +32,11 @@ public interface Mailbox {
      * @throws IOException If fails
      */
     int count() throws IOException;
+
+    /**
+     * Iterates all emails.
+     * @return Iterable
+     * @throws IOException If fails
+     */
+    Iterable<Message> iterate() throws IOException;
 }
