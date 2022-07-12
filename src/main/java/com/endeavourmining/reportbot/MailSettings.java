@@ -33,7 +33,7 @@ public interface MailSettings {
      * User mail address.
      * @return Address
      */
-    String mailAddress();
+    String address();
 
     /**
      * User password.
@@ -48,8 +48,8 @@ public interface MailSettings {
     MailServerSettings smtpServerSettings();
 
     /**
-     * Incoming mail server settings.
+     * IMAP server settings.
      * @return Settings
      */
-    MailServerSettings incomingMailServerSettings();
+    MailServerSettings imapServerSettings();
 }

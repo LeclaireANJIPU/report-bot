@@ -49,9 +49,9 @@ public final class Main {
             String.format(
                 "Number of emails : %s",
                 new UnreadEmails(
-                    msettings.incomingMailServerSettings().host(),
-                    msettings.incomingMailServerSettings().protocol(),
-                    msettings.incomingMailServerSettings().port(),
+                    msettings.imapServerSettings().host(),
+                    msettings.imapServerSettings().protocol(),
+                    msettings.imapServerSettings().port(),
                     msettings.login(),
                     msettings.password()
                 ).count()

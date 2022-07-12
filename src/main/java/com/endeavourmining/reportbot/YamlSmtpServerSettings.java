@@ -48,12 +48,12 @@ public final class YamlSmtpServerSettings implements MailServerSettings {
         final String protocol;
         if (
             Boolean.parseBoolean(
-                this.content.string("tls")
+                this.content.string("ssl_tls")
             )
         ) {
-            protocol = "smtp";
-        } else {
             protocol = "smtps";
+        } else {
+            protocol = "smtp";
         }
         return protocol;
     }

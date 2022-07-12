@@ -6,9 +6,9 @@ settings:
       password: 123
     smtp_server:
       host: localhost
-      tls: true
+      ssl_tls: true
       port: 465
-    incoming_server:
+    imap_server:
       host: localhost
-      protocol: imaps
+      ssl_tls: true
       port: 993

@@ -19,11 +19,11 @@ package com.endeavourmining.reportbot;
 import com.amihaiemil.eoyaml.YamlMapping;
 
 /**
- * Incoming mail settings in YAML.
+ * IMAP settings in YAML.
  *
  * @since 0.1
  */
-public final class YamlIncomingMailServerSettings implements MailServerSettings {
+public final class YamlImapServerSettings implements MailServerSettings {
 
     /**
      * YAML content.
@@ -34,7 +34,7 @@ public final class YamlIncomingMailServerSettings implements MailServerSettings 
      * Ctor.
      * @param content YAML content
      */
-    public YamlIncomingMailServerSettings(final YamlMapping content) {
+    public YamlImapServerSettings(final YamlMapping content) {
         this.content = content;
     }
 
@@ -45,7 +45,17 @@ public final class YamlIncomingMailServerSettings implements MailServerSettings 
 
     @Override
     public String protocol() {
-        return this.content.string("protocol");
+        final String ptl;
+        if (
+            Boolean.parseBoolean(
+                this.content.string("ssl_tls")
+            )
+        ) {
+            ptl = "imaps";
+        } else {
+            ptl = "imap";
+        }
+        return ptl;
     }
 
     @Override

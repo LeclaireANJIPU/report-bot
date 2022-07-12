@@ -27,12 +27,18 @@ settings:
       password: 123
     smtp_server:
       host: localhost
-      tls: true
+      ssl_tls: true
       port: 465
-    incoming_server:
+    imap_server:
       host: localhost
-      protocol: imaps # or imap, pop3, pop3s
+      ssl_tls: true
       port: 993
+```
+
+## Run Bot locally
+You have to execute this Maven command:
+```jshelllanguage
+mvn clean integration-test -Pstart 
 ```
 
 ## How to contribute

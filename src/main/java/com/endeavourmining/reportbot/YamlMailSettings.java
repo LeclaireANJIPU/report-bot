@@ -51,7 +51,7 @@ public final class YamlMailSettings implements MailSettings {
     }
 
     @Override
-    public String mailAddress() {
+    public String address() {
         return this.content.yamlMapping(
             YamlMailSettings.CREDENTIALS
         ).string("address");
@@ -72,9 +72,9 @@ public final class YamlMailSettings implements MailSettings {
     }
 
     @Override
-    public MailServerSettings incomingMailServerSettings() {
-        return new YamlIncomingMailServerSettings(
-            this.content.yamlMapping("incoming_server")
+    public MailServerSettings imapServerSettings() {
+        return new YamlImapServerSettings(
+            this.content.yamlMapping("imap_server")
         );
     }
 }
