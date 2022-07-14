@@ -16,34 +16,42 @@
  */
 package com.endeavourmining.reportbot;
 
+import com.amihaiemil.eoyaml.YamlNode;
+import com.amihaiemil.eoyaml.YamlSequence;
+import java.util.Collection;
+import java.util.LinkedList;
+
 /**
- * Mail settings.
+ * Agents in YAML.
  *
  * @since 0.1
  */
-public interface MailSettings {
+public final class YamlAgents implements Agents {
 
     /**
-     * User credentials.
-     * @return Credentials
+     * YAML content.
      */
-    Credentials credentials();
+    private final YamlSequence content;
 
     /**
-     * User mail address.
-     * @return Address
+     * Ctor.
+     * @param content YAML content
      */
-    String address();
+    public YamlAgents(final YamlSequence content) {
+        this.content = content;
+    }
 
-    /**
-     * SMTP server settings.
-     * @return Settings
-     */
-    MailServerSettings smtpServerSettings();
+    @Override
+    public int count() {
+        return this.content.size();
+    }
 
-    /**
-     * IMAP server settings.
-     * @return Settings
-     */
-    MailServerSettings imapServerSettings();
+    @Override
+    public Iterable<Agent> iterate() {
+        final Collection<Agent> items = new LinkedList<>();
+        for (final YamlNode yaml : this.content.values()) {
+            items.add(new YamlAgent(yaml.asMapping()));
+        }
+        return items;
+    }
 }

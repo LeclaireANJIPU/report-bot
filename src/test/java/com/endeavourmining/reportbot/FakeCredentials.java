@@ -16,34 +16,35 @@
  */
 package com.endeavourmining.reportbot;
 
+import com.icegreen.greenmail.user.GreenMailUser;
+
 /**
- * Mail settings.
+ * Fake credentials.
  *
  * @since 0.1
  */
-public interface MailSettings {
+final class FakeCredentials implements Credentials {
 
     /**
-     * User credentials.
-     * @return Credentials
+     * User.
      */
-    Credentials credentials();
+    private final GreenMailUser user;
 
     /**
-     * User mail address.
-     * @return Address
+     * Ctor.
+     * @param user Green mail user
      */
-    String address();
+    FakeCredentials(final GreenMailUser user) {
+        this.user = user;
+    }
 
-    /**
-     * SMTP server settings.
-     * @return Settings
-     */
-    MailServerSettings smtpServerSettings();
+    @Override
+    public String login() {
+        return this.user.getLogin();
+    }
 
-    /**
-     * IMAP server settings.
-     * @return Settings
-     */
-    MailServerSettings imapServerSettings();
+    @Override
+    public String password() {
+        return this.user.getPassword();
+    }
 }

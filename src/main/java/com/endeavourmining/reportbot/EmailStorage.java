@@ -16,34 +16,30 @@
  */
 package com.endeavourmining.reportbot;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import javax.mail.Message;
+
 /**
- * Mail settings.
+ * Email storage.
  *
  * @since 0.1
  */
-public interface MailSettings {
+public interface EmailStorage {
 
     /**
-     * User credentials.
-     * @return Credentials
+     * Save an email.
+     * @param message Email
+     * @return Folder of email
+     * @throws IOException If fails
      */
-    Credentials credentials();
+    Path save(Message message) throws IOException;
 
     /**
-     * User mail address.
-     * @return Address
+     * Iterate emails by status.
+     * @param status Status
+     * @return Iterable
+     * @throws IOException If fails
      */
-    String address();
-
-    /**
-     * SMTP server settings.
-     * @return Settings
-     */
-    MailServerSettings smtpServerSettings();
-
-    /**
-     * IMAP server settings.
-     * @return Settings
-     */
-    MailServerSettings imapServerSettings();
+    Iterable<Email> iterate(EmailStatus status) throws IOException;
 }

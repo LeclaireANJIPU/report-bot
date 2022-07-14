@@ -17,33 +17,21 @@
 package com.endeavourmining.reportbot;
 
 /**
- * Mail settings.
+ * Credentials.
  *
  * @since 0.1
  */
-public interface MailSettings {
+public interface Credentials {
 
     /**
-     * User credentials.
-     * @return Credentials
+     * Username or mail address.
+     * @return Login
      */
-    Credentials credentials();
+    String login();
 
     /**
-     * User mail address.
-     * @return Address
+     * Password.
+     * @return Password
      */
-    String address();
-
-    /**
-     * SMTP server settings.
-     * @return Settings
-     */
-    MailServerSettings smtpServerSettings();
-
-    /**
-     * IMAP server settings.
-     * @return Settings
-     */
-    MailServerSettings imapServerSettings();
+    String password();
 }

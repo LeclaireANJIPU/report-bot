@@ -1,14 +1,44 @@
-settings:
-  mailbox:
-    address: foo@example.com
-    credentials:
-      login: foo
-      password: 123
-    smtp_server:
-      host: localhost
-      ssl_tls: true
-      port: 465
-    imap_server:
-      host: localhost
-      ssl_tls: true
-      port: 993
+---------
+version: 1.0
+mailbox:
+  address: foo@example.com
+  credentials:
+    login: foo
+    password: 123
+  smtp_server:
+    host: localhost
+    ssl_tls: true
+    port: 465
+  imap_server:
+    host: localhost
+    ssl_tls: true
+    port: 993
+report:
+  extension: xlsx
+  suffix: _WeeklyActualandPlans
+sites:
+  - site:
+    name: Abidjan Sud
+    abbreviated: ABJS
+    agents:
+      - agent:
+        name: Roland KOFFI
+        mail_address: roland.koffi@example.com
+      - agent:
+        name: Sery ASSALE
+        mail_address: sery.assale@example.com
+  - site:
+    name: Abidjan Nord
+    abbreviated: ABJN
+    agents:
+      - agent:
+        name: Séraphin TIZIE
+        mail_address: seraphin.tizie@example.com
+      - agent:
+        name: Akissi NETA
+        mail_address: akissi.neta@example.com
+      - agent:
+        name: Flore MABEA
+        mail_address: flore.mabea@example.com
+storage:
+  path: "emails"

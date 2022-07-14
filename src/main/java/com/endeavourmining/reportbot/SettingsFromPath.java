@@ -18,9 +18,11 @@ package com.endeavourmining.reportbot;
 
 import com.amihaiemil.eoyaml.Yaml;
 import com.amihaiemil.eoyaml.YamlMapping;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * Settings from path.
@@ -44,11 +46,38 @@ public final class SettingsFromPath implements Settings {
     }
 
     @Override
-    public MailSettings mailSettings() {
+    public MailSettings mailbox() {
         return new YamlMailSettings(
-            this.content.yamlMapping("settings")
-                .yamlMapping("mailbox")
+            this.content.yamlMapping("mailbox")
         );
+    }
+
+    @Override
+    public ReportSettings report() {
+        return new YamlReportSettings(
+            this.content.yamlMapping("report")
+        );
+    }
+
+    @Override
+    public Sites sites() {
+        return new YamlSites(
+            this.content.yamlSequence("sites")
+        );
+    }
+
+    @Override
+    public Path storagePath() {
+        final File file = new File(
+            this.content.yamlMapping("storage").string("path")
+        );
+        final Path stopath;
+        if (file.isAbsolute()) {
+            stopath = file.toPath();
+        } else {
+            stopath = Paths.get(System.getProperty("user.dir"), file.getName());
+        }
+        return stopath;
     }
 
     /**

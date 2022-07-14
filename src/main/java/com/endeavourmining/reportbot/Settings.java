@@ -16,6 +16,8 @@
  */
 package com.endeavourmining.reportbot;
 
+import java.nio.file.Path;
+
 /**
  * App settings.
  *
@@ -27,5 +29,23 @@ public interface Settings {
      * Mail settings.
      * @return Settings
      */
-    MailSettings mailSettings();
+    MailSettings mailbox();
+
+    /**
+     * Report settings.
+     * @return Settings
+     */
+    ReportSettings report();
+
+    /**
+     * Sites settings.
+     * @return Sites
+     */
+    Sites sites();
+
+    /**
+     * Storage path.
+     * @return Path
+     */
+    Path storagePath();
 }

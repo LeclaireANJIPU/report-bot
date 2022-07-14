@@ -16,34 +16,40 @@
  */
 package com.endeavourmining.reportbot;
 
+import com.icegreen.greenmail.imap.ImapServer;
+
 /**
- * Mail settings.
+ * Fake IMAP server settings.
  *
  * @since 0.1
  */
-public interface MailSettings {
+final class FakeImapServerSettings implements MailServerSettings {
 
     /**
-     * User credentials.
-     * @return Credentials
+     * IMAP server.
      */
-    Credentials credentials();
+    private final ImapServer server;
 
     /**
-     * User mail address.
-     * @return Address
+     * Ctor.
+     * @param server IMAP server
      */
-    String address();
+    FakeImapServerSettings(final ImapServer server) {
+        this.server = server;
+    }
 
-    /**
-     * SMTP server settings.
-     * @return Settings
-     */
-    MailServerSettings smtpServerSettings();
+    @Override
+    public String host() {
+        return this.server.getBindTo();
+    }
 
-    /**
-     * IMAP server settings.
-     * @return Settings
-     */
-    MailServerSettings imapServerSettings();
+    @Override
+    public String protocol() {
+        return this.server.getProtocol();
+    }
+
+    @Override
+    public int port() {
+        return this.server.getPort();
+    }
 }

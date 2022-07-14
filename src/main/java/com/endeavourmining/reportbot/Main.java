@@ -44,16 +44,21 @@ public final class Main {
         final Settings settings = new SettingsFromPath(
             Paths.get(System.getProperty("user.dir"), "settings.yml")
         );
-        final MailSettings msettings = settings.mailSettings();
+        final MailSettings msettings = settings.mailbox();
         System.out.println(
             String.format(
-                "Number of emails : %s",
-                new UnreadEmails(
-                    msettings.imapServerSettings().host(),
-                    msettings.imapServerSettings().protocol(),
-                    msettings.imapServerSettings().port(),
-                    msettings.login(),
-                    msettings.password()
+                "Number of report emails : %s",
+                new UnreadReportEmails(
+                    String.format(
+                        "%s.%s",
+                        settings.report().suffix(),
+                        settings.report().extension()
+                    ),
+                    new UnreadEmails(
+                        msettings.imapServerSettings(),
+                        msettings.credentials(),
+                        new EmailFileStorage(settings.storagePath())
+                    )
                 ).count()
             )
         );

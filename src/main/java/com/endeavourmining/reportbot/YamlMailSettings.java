@@ -26,11 +26,6 @@ import com.amihaiemil.eoyaml.YamlMapping;
 public final class YamlMailSettings implements MailSettings {
 
     /**
-     * Credentials.
-     */
-    private static final String CREDENTIALS = "credentials";
-
-    /**
      * YAML file content.
      */
     private final YamlMapping content;
@@ -44,24 +39,15 @@ public final class YamlMailSettings implements MailSettings {
     }
 
     @Override
-    public String login() {
-        return this.content.yamlMapping(
-            YamlMailSettings.CREDENTIALS
-        ).string("login");
+    public Credentials credentials() {
+        return new YamlCredentials(
+            this.content.yamlMapping("credentials")
+        );
     }
 
     @Override
     public String address() {
-        return this.content.yamlMapping(
-            YamlMailSettings.CREDENTIALS
-        ).string("address");
-    }
-
-    @Override
-    public String password() {
-        return this.content.yamlMapping(
-            YamlMailSettings.CREDENTIALS
-        ).string("password");
+        return this.content.string("address");
     }
 
     @Override

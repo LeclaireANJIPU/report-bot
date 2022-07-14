@@ -17,7 +17,6 @@
 package com.endeavourmining.reportbot;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
@@ -38,29 +37,19 @@ import javax.mail.search.FlagTerm;
 public final class UnreadEmails implements Mailbox {
 
     /**
-     * Username or mail address.
+     * Mail server settings.
      */
-    private final String login;
+    private final MailServerSettings settings;
 
     /**
-     * Password.
+     * Credentials.
      */
-    private final String password;
+    private final Credentials credentials;
 
     /**
-     * Host.
+     * Storage.
      */
-    private final String host;
-
-    /**
-     * Protocol.
-     */
-    private final String protocol;
-
-    /**
-     * Port.
-     */
-    private final int port;
+    private final EmailStorage storage;
 
     /**
      * Emails fetched.
@@ -70,26 +59,21 @@ public final class UnreadEmails implements Mailbox {
     /**
      * List of messages.
      */
-    private final List<Message> messages;
+    private final List<Email> messages;
 
     /**
      * Ctor.
-     * @param host Host
-     * @param protocol Protocol (imap, pop3, etc.)
-     * @param port Port
-     * @param login Login
-     * @param password Password
-     * @checkstyle ParameterNumberCheck (10 lines)
+     * @param settings Mail server settings
+     * @param credentials User credentials
+     * @param storage Email storage
      */
     public UnreadEmails(
-        final String host, final String protocol, final int port,
-        final String login, final String password
+        final MailServerSettings settings, final Credentials credentials,
+        final EmailStorage storage
     ) {
-        this.host = host;
-        this.protocol = protocol;
-        this.port = port;
-        this.login = login;
-        this.password = password;
+        this.settings = settings;
+        this.credentials = credentials;
+        this.storage = storage;
         this.fetched = false;
         this.messages = new LinkedList<>();
     }
@@ -102,54 +86,57 @@ public final class UnreadEmails implements Mailbox {
     }
 
     @Override
-    public Iterable<Message> iterate() throws IOException {
+    public Iterable<Email> iterate() throws IOException {
         this.fetch();
         return this.messages;
     }
 
     /**
-     * Fetch emails.
+     * Fetch unread emails.
      * @throws IOException If fails
      */
     private void fetch() throws IOException {
         if (!this.fetched) {
             final Properties props = System.getProperties();
             props.setProperty(
-                String.format("mail.%s.socketFactory.fallback", this.protocol), "false"
+                String.format("mail.%s.socketFactory.fallback", this.settings.protocol()), "false"
             );
             props.setProperty(
-                String.format("mail.%s.port", this.protocol), String.valueOf(this.port)
+                String.format("mail.%s.port", this.settings.protocol()),
+                String.valueOf(this.settings.port())
             );
             props.setProperty(
-                String.format("mail.%s.socketFactory.port", this.protocol),
-                String.valueOf(this.port)
+                String.format("mail.%s.socketFactory.port", this.settings.protocol()),
+                String.valueOf(this.settings.port())
             );
             props.put(
-                String.format("mail.%s.host", this.protocol), this.host
+                String.format("mail.%s.host", this.settings.protocol()), this.settings.host()
             );
             final Session session = Session.getInstance(
                 props,
                 new javax.mail.Authenticator() {
                     protected PasswordAuthentication getPasswordAuthentication() {
                         return new PasswordAuthentication(
-                            UnreadEmails.this.login,
-                            UnreadEmails.this.password
+                            UnreadEmails.this.credentials.login(),
+                            UnreadEmails.this.credentials.password()
                         );
                     }
                 }
             );
             try {
-                final Store store = session.getStore(this.protocol);
+                final Store store = session.getStore(this.settings.protocol());
                 store.connect();
                 final Folder folder = store.getFolder("INBOX");
                 folder.open(Folder.READ_WRITE);
-                this.messages.addAll(
-                    Arrays.asList(
-                        folder.search(
-                            new FlagTerm(new Flags(Flags.Flag.SEEN), false)
-                        )
+                for (
+                    final Message message : folder.search(
+                        new FlagTerm(new Flags(Flags.Flag.SEEN), false)
                     )
-                );
+                ) {
+                    this.messages.add(
+                        new EmailFromPath(this.storage.save(message))
+                    );
+                }
                 folder.close(false);
                 store.close();
             } catch (final MessagingException exe) {

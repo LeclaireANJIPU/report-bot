@@ -20,6 +20,7 @@ import com.icegreen.greenmail.user.GreenMailUser;
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
 import java.io.IOException;
+import java.nio.file.Path;
 import javax.mail.Message;
 import javax.mail.Session;
 import javax.mail.Transport;
@@ -30,6 +31,7 @@ import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Test case for {@link UnreadEmails}.
@@ -56,7 +58,7 @@ final class UnreadEmailsTest {
     }
 
     @Test
-    void getNumberOfUnreadEmails() throws Exception {
+    void getNumberOfUnreadEmails(@TempDir final Path temp) throws Exception {
         final GreenMailUser user = this.server.setUser(
             "bar@example.com",
             "bar",
@@ -71,8 +73,9 @@ final class UnreadEmailsTest {
         Transport.send(msg);
         MatcherAssert.assertThat(
             new UnreadEmails(
-                this.server.getImap().getBindTo(), this.server.getImap().getProtocol(),
-                this.server.getImap().getPort(), user.getLogin(), user.getPassword()
+                new FakeImapServerSettings(this.server.getImap()),
+                new FakeCredentials(user),
+                new EmailFileStorage(temp)
             ).count(),
             new IsEqual<>(1)
         );

@@ -16,34 +16,66 @@
  */
 package com.endeavourmining.reportbot;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.time.LocalDateTime;
+
 /**
- * Mail settings.
+ * Email.
  *
  * @since 0.1
  */
-public interface MailSettings {
+public interface Email {
 
     /**
-     * User credentials.
-     * @return Credentials
+     * From.
+     * @return Mail address
      */
-    Credentials credentials();
+    String from();
 
     /**
-     * User mail address.
-     * @return Address
+     * To.
+     * @return Mail address
+     * @checkstyle MethodNameCheck (3 lines)
      */
-    String address();
+    @SuppressWarnings("PMD.ShortMethodName")
+    String to();
 
     /**
-     * SMTP server settings.
-     * @return Settings
+     * Sent date.
+     * @return Datetime
      */
-    MailServerSettings smtpServerSettings();
+    LocalDateTime sentDate();
 
     /**
-     * IMAP server settings.
-     * @return Settings
+     * Received date.
+     * @return Datetime
      */
-    MailServerSettings imapServerSettings();
+    LocalDateTime receivedDate();
+
+    /**
+     * Subject.
+     * @return Subject
+     */
+    String subject();
+
+    /**
+     * Message.
+     * @return Text
+     */
+    String message();
+
+    /**
+     * List of attached filenames.
+     * @return Iterable
+     */
+    Iterable<String> attachmentFilenames();
+
+    /**
+     * Load an attached file.
+     * @param filename Filename
+     * @return Input stream
+     * @throws IOException If fails
+     */
+    InputStream load(String filename) throws IOException;
 }

@@ -16,34 +16,40 @@
  */
 package com.endeavourmining.reportbot;
 
+import com.amihaiemil.eoyaml.YamlMapping;
+
 /**
- * Mail settings.
+ * Site in YAML.
  *
  * @since 0.1
  */
-public interface MailSettings {
+public final class YamlSite implements Site {
 
     /**
-     * User credentials.
-     * @return Credentials
+     * YAML content.
      */
-    Credentials credentials();
+    private final YamlMapping content;
 
     /**
-     * User mail address.
-     * @return Address
+     * Ctor.
+     * @param content YAML content
      */
-    String address();
+    public YamlSite(final YamlMapping content) {
+        this.content = content;
+    }
 
-    /**
-     * SMTP server settings.
-     * @return Settings
-     */
-    MailServerSettings smtpServerSettings();
+    @Override
+    public String name() {
+        return this.content.string("name");
+    }
 
-    /**
-     * IMAP server settings.
-     * @return Settings
-     */
-    MailServerSettings imapServerSettings();
+    @Override
+    public Agents agents() {
+        return new YamlAgents(this.content.yamlSequence("agents"));
+    }
+
+    @Override
+    public String abbreviated() {
+        return this.content.string("abbreviated");
+    }
 }

@@ -17,33 +17,21 @@
 package com.endeavourmining.reportbot;
 
 /**
- * Mail settings.
+ * Site agent.
  *
  * @since 0.1
  */
-public interface MailSettings {
+public interface Agent {
 
     /**
-     * User credentials.
-     * @return Credentials
+     * Full name.
+     * @return Name
      */
-    Credentials credentials();
+    String name();
 
     /**
-     * User mail address.
+     * Mail address.
      * @return Address
      */
     String address();
-
-    /**
-     * SMTP server settings.
-     * @return Settings
-     */
-    MailServerSettings smtpServerSettings();
-
-    /**
-     * IMAP server settings.
-     * @return Settings
-     */
-    MailServerSettings imapServerSettings();
 }

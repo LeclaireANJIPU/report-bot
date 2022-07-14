@@ -16,34 +16,42 @@
  */
 package com.endeavourmining.reportbot;
 
+import com.amihaiemil.eoyaml.YamlNode;
+import com.amihaiemil.eoyaml.YamlSequence;
+import java.util.Collection;
+import java.util.LinkedList;
+
 /**
- * Mail settings.
+ * Sites in YAML.
  *
  * @since 0.1
  */
-public interface MailSettings {
+public final class YamlSites implements Sites {
 
     /**
-     * User credentials.
-     * @return Credentials
+     * YAML content.
      */
-    Credentials credentials();
+    private final YamlSequence content;
 
     /**
-     * User mail address.
-     * @return Address
+     * Ctor.
+     * @param content YAML content
      */
-    String address();
+    public YamlSites(final YamlSequence content) {
+        this.content = content;
+    }
 
-    /**
-     * SMTP server settings.
-     * @return Settings
-     */
-    MailServerSettings smtpServerSettings();
+    @Override
+    public int count() {
+        return this.content.size();
+    }
 
-    /**
-     * IMAP server settings.
-     * @return Settings
-     */
-    MailServerSettings imapServerSettings();
+    @Override
+    public Iterable<Site> iterate() {
+        final Collection<Site> items = new LinkedList<>();
+        for (final YamlNode yaml : this.content.values()) {
+            items.add(new YamlSite(yaml.asMapping()));
+        }
+        return items;
+    }
 }

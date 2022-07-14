@@ -19,21 +19,62 @@ Report Bot is a bot that automates data integration of an Excel report file sent
 ## Application configuration
 Put at the root folder, the configuration file `settings.yml` with content:
 ```yaml
-settings:
-  mailbox: # Bot mailbox settings
-    address: foo@example.com
-    credentials:
-      login: foo
-      password: 123
-    smtp_server:
-      host: localhost
-      ssl_tls: true
-      port: 465
-    imap_server:
-      host: localhost
-      ssl_tls: true
-      port: 993
+---------
+version: 1.0
+mailbox: # Bot mailbox settings
+  address: foo@example.com
+  credentials:
+    login: foo
+    password: 123
+  smtp_server:
+    host: localhost
+    ssl_tls: true
+    port: 465
+  imap_server:
+    host: localhost
+    ssl_tls: true
+    port: 993
+report:
+  extension: xlsx
+  suffix: _WeeklyActualandPlans
+sites:
+  - site:
+    name: Abidjan Sud
+    abbreviated: ABJS
+    agents:
+      - agent:
+        name: Roland KOFFI
+        mail_address: roland.koffi@example.com
+      - agent:
+        name: Sery ASSALE
+        mail_address: sery.assale@example.com
+  - site:
+    name: Abidjan Nord
+    abbreviated: ABJN
+    agents:
+      - agent:
+        name: Seraphin TIZIE
+        mail_address: seraphin.tizie@example.com
+      - agent:
+        name: Akissi NETA
+        mail_address: akissi.neta@example.com
+      - agent:
+        name: Flore MABEA
+        mail_address: flore.mabea@example.com
+storage:
+  path: "emails"  # relative or absolute path
 ```
+
+The storage for mail contains three (3) folders :
+- `TO_TREAT`: contains new emails
+- `DONE`: contains emails treated with success
+- `ERROR`: contains emails that failed to be treated
+
+## Structure of an email folder in the storage
+An email loaded by the Bot is saved in a folder (with UUID name) structured like this :
+- `metadata.yml`: YAML file that contains mail metadata
+- `content.txt`: Mail message content
+- List of attachments
 
 ## Run Bot locally
 You have to execute this Maven command:
