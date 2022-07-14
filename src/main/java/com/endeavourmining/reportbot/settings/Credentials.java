@@ -14,32 +14,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.endeavourmining.reportbot;
-
-import java.io.IOException;
-import java.nio.file.Path;
-import javax.mail.Message;
+package com.endeavourmining.reportbot.settings;
 
 /**
- * Email storage.
+ * Credentials.
  *
  * @since 0.1
  */
-public interface EmailStorage {
+public interface Credentials {
 
     /**
-     * Save an email.
-     * @param message Email
-     * @return Folder of email
-     * @throws IOException If fails
+     * Username or mail address.
+     * @return Login
      */
-    Path save(Message message) throws IOException;
+    String login();
 
     /**
-     * Iterate emails by status.
-     * @param status Status
-     * @return Iterable
-     * @throws IOException If fails
+     * Password.
+     * @return Password
      */
-    Iterable<Email> iterate(EmailStatus status) throws IOException;
+    String password();
 }

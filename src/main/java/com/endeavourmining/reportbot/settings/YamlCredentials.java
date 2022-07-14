@@ -14,52 +14,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.endeavourmining.reportbot;
+package com.endeavourmining.reportbot.settings;
 
 import com.amihaiemil.eoyaml.YamlMapping;
 
 /**
- * IMAP settings in YAML.
+ * YAML credentials.
  *
  * @since 0.1
  */
-public final class YamlImapServerSettings implements MailServerSettings {
+public final class YamlCredentials implements Credentials {
 
     /**
      * YAML content.
      */
-    private final YamlMapping content;
+    private final YamlMapping yaml;
 
     /**
      * Ctor.
-     * @param content YAML content
+     * @param yaml YAML content
      */
-    public YamlImapServerSettings(final YamlMapping content) {
-        this.content = content;
+    public YamlCredentials(final YamlMapping yaml) {
+        this.yaml = yaml;
     }
 
     @Override
-    public String host() {
-        return this.content.string("host");
+    public String login() {
+        return this.yaml.string("login");
     }
 
     @Override
-    public String protocol() {
-        final String ptl;
-        if (
-            Boolean.parseBoolean(
-                this.content.string("ssl_tls")
-            )
-        ) {
-            ptl = "imaps";
-        } else {
-            ptl = "imap";
-        }
-        return ptl;
-    }
-
-    @Override
-    public int port() {
-        return this.content.integer("port");
+    public String password() {
+        return this.yaml.string("password");
     }
 }

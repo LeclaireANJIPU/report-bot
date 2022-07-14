@@ -14,8 +14,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.endeavourmining.reportbot;
+package com.endeavourmining.reportbot.mail;
 
+import com.endeavourmining.reportbot.AvailablePort;
+import com.endeavourmining.reportbot.FakeCredentials;
+import com.endeavourmining.reportbot.FakeImapServerSettings;
 import com.icegreen.greenmail.user.GreenMailUser;
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;

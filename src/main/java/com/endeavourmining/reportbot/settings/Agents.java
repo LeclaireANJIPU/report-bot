@@ -14,37 +14,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.endeavourmining.reportbot;
-
-import com.amihaiemil.eoyaml.YamlMapping;
+package com.endeavourmining.reportbot.settings;
 
 /**
- * Submission settings in YAML.
+ * All site agents.
  *
  * @since 0.1
  */
-public final class YamlReportSettings implements ReportSettings {
+public interface Agents {
 
     /**
-     * YAML content.
+     * Number of agents.
+     * @return Count
      */
-    private final YamlMapping content;
+    int count();
 
     /**
-     * Ctor.
-     * @param content YAML content
+     * Iterate them all.
+     * @return Iterable
      */
-    public YamlReportSettings(final YamlMapping content) {
-        this.content = content;
-    }
-
-    @Override
-    public String extension() {
-        return this.content.string("extension");
-    }
-
-    @Override
-    public String suffix() {
-        return this.content.string("suffix");
-    }
+    Iterable<Agent> iterate();
 }

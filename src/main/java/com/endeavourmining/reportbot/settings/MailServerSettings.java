@@ -14,24 +14,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.endeavourmining.reportbot;
+package com.endeavourmining.reportbot.settings;
 
 /**
- * All site agents.
+ * Mail server settings.
  *
  * @since 0.1
  */
-public interface Agents {
+public interface MailServerSettings {
 
     /**
-     * Number of agents.
-     * @return Count
+     * Host.
+     * @return Host
      */
-    int count();
+    String host();
 
     /**
-     * Iterate them all.
-     * @return Iterable
+     * Protocol.
+     * @return Protocol
      */
-    Iterable<Agent> iterate();
+    String protocol();
+
+    /**
+     * Port.
+     * @return Port
+     */
+    int port();
 }

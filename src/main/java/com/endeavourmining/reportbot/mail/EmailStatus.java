@@ -14,36 +14,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.endeavourmining.reportbot;
+package com.endeavourmining.reportbot.mail;
 
 /**
- * Mail settings.
+ * Email status.
  *
  * @since 0.1
  */
-public interface MailSettings {
+public enum EmailStatus {
 
     /**
-     * User credentials.
-     * @return Credentials
+     * Emails to treat.
      */
-    Credentials credentials();
+    TO_TREAT,
 
     /**
-     * User mail address.
-     * @return Address
+     * Emails treated with success.
      */
-    String address();
+    DONE,
 
     /**
-     * SMTP server settings.
-     * @return Settings
+     * Emails with errors.
      */
-    MailServerSettings smtpServerSettings();
-
-    /**
-     * IMAP server settings.
-     * @return Settings
-     */
-    MailServerSettings imapServerSettings();
+    ERROR;
 }

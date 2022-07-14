@@ -14,53 +14,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.endeavourmining.reportbot;
+package com.endeavourmining.reportbot.settings;
 
-import com.amihaiemil.eoyaml.YamlMapping;
+import com.amihaiemil.eoyaml.YamlNode;
+import com.amihaiemil.eoyaml.YamlSequence;
+import java.util.Collection;
+import java.util.LinkedList;
 
 /**
- * Mail settings in YAML content.
+ * Agents in YAML.
  *
  * @since 0.1
  */
-public final class YamlMailSettings implements MailSettings {
+public final class YamlAgents implements Agents {
 
     /**
-     * YAML file content.
+     * YAML content.
      */
-    private final YamlMapping content;
+    private final YamlSequence content;
 
     /**
      * Ctor.
      * @param content YAML content
      */
-    public YamlMailSettings(final YamlMapping content) {
+    public YamlAgents(final YamlSequence content) {
         this.content = content;
     }
 
     @Override
-    public Credentials credentials() {
-        return new YamlCredentials(
-            this.content.yamlMapping("credentials")
-        );
+    public int count() {
+        return this.content.size();
     }
 
     @Override
-    public String address() {
-        return this.content.string("address");
-    }
-
-    @Override
-    public MailServerSettings smtpServerSettings() {
-        return new YamlSmtpServerSettings(
-            this.content.yamlMapping("smtp_server")
-        );
-    }
-
-    @Override
-    public MailServerSettings imapServerSettings() {
-        return new YamlImapServerSettings(
-            this.content.yamlMapping("imap_server")
-        );
+    public Iterable<Agent> iterate() {
+        final Collection<Agent> items = new LinkedList<>();
+        for (final YamlNode yaml : this.content.values()) {
+            items.add(new YamlAgent(yaml.asMapping()));
+        }
+        return items;
     }
 }

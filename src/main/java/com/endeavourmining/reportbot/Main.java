@@ -16,6 +16,12 @@
  */
 package com.endeavourmining.reportbot;
 
+import com.endeavourmining.reportbot.mail.EmailFileStorage;
+import com.endeavourmining.reportbot.mail.UnreadEmails;
+import com.endeavourmining.reportbot.mail.UnreadReportEmails;
+import com.endeavourmining.reportbot.settings.MailSettings;
+import com.endeavourmining.reportbot.settings.Settings;
+import com.endeavourmining.reportbot.settings.SettingsFromPath;
 import java.io.IOException;
 import java.nio.file.Paths;
 

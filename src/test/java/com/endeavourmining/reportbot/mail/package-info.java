@@ -14,38 +14,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.endeavourmining.reportbot;
-
-import java.nio.file.Path;
 
 /**
- * App settings.
+ * Test for Mail classes.
  *
  * @since 0.1
  */
-public interface Settings {
-
-    /**
-     * Mail settings.
-     * @return Settings
-     */
-    MailSettings mailbox();
-
-    /**
-     * Report settings.
-     * @return Settings
-     */
-    ReportSettings report();
-
-    /**
-     * Sites settings.
-     * @return Sites
-     */
-    Sites sites();
-
-    /**
-     * Storage path.
-     * @return Path
-     */
-    Path storagePath();
-}
+package com.endeavourmining.reportbot.mail;

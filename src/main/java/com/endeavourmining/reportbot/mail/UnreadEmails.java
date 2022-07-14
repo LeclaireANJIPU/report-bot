@@ -14,8 +14,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.endeavourmining.reportbot;
+package com.endeavourmining.reportbot.mail;
 
+import com.endeavourmining.reportbot.settings.Credentials;
+import com.endeavourmining.reportbot.settings.MailServerSettings;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;

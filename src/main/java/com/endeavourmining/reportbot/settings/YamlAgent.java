@@ -14,44 +14,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.endeavourmining.reportbot;
+package com.endeavourmining.reportbot.settings;
 
-import com.amihaiemil.eoyaml.YamlNode;
-import com.amihaiemil.eoyaml.YamlSequence;
-import java.util.Collection;
-import java.util.LinkedList;
+import com.amihaiemil.eoyaml.YamlMapping;
 
 /**
- * Sites in YAML.
+ * Agent in YAML.
  *
  * @since 0.1
  */
-public final class YamlSites implements Sites {
+public final class YamlAgent implements Agent {
 
     /**
      * YAML content.
      */
-    private final YamlSequence content;
+    private final YamlMapping content;
 
     /**
      * Ctor.
      * @param content YAML content
      */
-    public YamlSites(final YamlSequence content) {
+    public YamlAgent(final YamlMapping content) {
         this.content = content;
     }
 
     @Override
-    public int count() {
-        return this.content.size();
+    public String name() {
+        return this.content.string("name");
     }
 
     @Override
-    public Iterable<Site> iterate() {
-        final Collection<Site> items = new LinkedList<>();
-        for (final YamlNode yaml : this.content.values()) {
-            items.add(new YamlSite(yaml.asMapping()));
-        }
-        return items;
+    public String address() {
+        return this.content.string("mail_address");
     }
 }

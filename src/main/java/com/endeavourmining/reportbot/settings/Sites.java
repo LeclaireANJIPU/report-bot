@@ -14,37 +14,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.endeavourmining.reportbot;
-
-import com.amihaiemil.eoyaml.YamlMapping;
+package com.endeavourmining.reportbot.settings;
 
 /**
- * YAML credentials.
+ * Sites.
  *
  * @since 0.1
  */
-public final class YamlCredentials implements Credentials {
+public interface Sites {
 
     /**
-     * YAML content.
+     * Number of sites.
+     * @return Count
      */
-    private final YamlMapping yaml;
+    int count();
 
     /**
-     * Ctor.
-     * @param yaml YAML content
+     * Iterates them all.
+     * @return Iterable
      */
-    public YamlCredentials(final YamlMapping yaml) {
-        this.yaml = yaml;
-    }
-
-    @Override
-    public String login() {
-        return this.yaml.string("login");
-    }
-
-    @Override
-    public String password() {
-        return this.yaml.string("password");
-    }
+    Iterable<Site> iterate();
 }

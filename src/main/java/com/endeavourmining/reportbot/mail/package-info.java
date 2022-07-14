@@ -14,24 +14,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.endeavourmining.reportbot;
 
 /**
- * Report settings.
+ * Mail classes.
  *
  * @since 0.1
  */
-public interface ReportSettings {
-
-    /**
-     * Extension authorized.
-     * @return Extension
-     */
-    String extension();
-
-    /**
-     * Suffix.
-     * @return Suffix
-     */
-    String suffix();
-}
+package com.endeavourmining.reportbot.mail;

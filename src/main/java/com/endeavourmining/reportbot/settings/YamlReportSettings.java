@@ -14,43 +14,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.endeavourmining.reportbot;
+package com.endeavourmining.reportbot.settings;
 
-import com.endeavourmining.reportbot.settings.MailServerSettings;
-import com.icegreen.greenmail.imap.ImapServer;
+import com.amihaiemil.eoyaml.YamlMapping;
 
 /**
- * Fake IMAP server settings.
+ * Submission settings in YAML.
  *
  * @since 0.1
  */
-public final class FakeImapServerSettings implements MailServerSettings {
+public final class YamlReportSettings implements ReportSettings {
 
     /**
-     * IMAP server.
+     * YAML content.
      */
-    private final ImapServer server;
+    private final YamlMapping content;
 
     /**
      * Ctor.
-     * @param server IMAP server
+     * @param content YAML content
      */
-    public FakeImapServerSettings(final ImapServer server) {
-        this.server = server;
+    public YamlReportSettings(final YamlMapping content) {
+        this.content = content;
     }
 
     @Override
-    public String host() {
-        return this.server.getBindTo();
+    public String extension() {
+        return this.content.string("extension");
     }
 
     @Override
-    public String protocol() {
-        return this.server.getProtocol();
-    }
-
-    @Override
-    public int port() {
-        return this.server.getPort();
+    public String suffix() {
+        return this.content.string("suffix");
     }
 }

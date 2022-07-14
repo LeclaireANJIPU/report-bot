@@ -14,52 +14,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.endeavourmining.reportbot;
+package com.endeavourmining.reportbot.settings;
 
-import com.amihaiemil.eoyaml.YamlMapping;
+import java.nio.file.Path;
 
 /**
- * Smtp settings in YAML.
+ * App settings.
  *
  * @since 0.1
  */
-public final class YamlSmtpServerSettings implements MailServerSettings {
+public interface Settings {
 
     /**
-     * YAML content.
+     * Mail settings.
+     * @return Settings
      */
-    private final YamlMapping content;
+    MailSettings mailbox();
 
     /**
-     * Ctor.
-     * @param content YAML content
+     * Report settings.
+     * @return Settings
      */
-    public YamlSmtpServerSettings(final YamlMapping content) {
-        this.content = content;
-    }
+    ReportSettings report();
 
-    @Override
-    public String host() {
-        return this.content.string("host");
-    }
+    /**
+     * Sites settings.
+     * @return Sites
+     */
+    Sites sites();
 
-    @Override
-    public String protocol() {
-        final String protocol;
-        if (
-            Boolean.parseBoolean(
-                this.content.string("ssl_tls")
-            )
-        ) {
-            protocol = "smtps";
-        } else {
-            protocol = "smtp";
-        }
-        return protocol;
-    }
-
-    @Override
-    public int port() {
-        return this.content.integer("port");
-    }
+    /**
+     * Storage path.
+     * @return Path
+     */
+    Path storagePath();
 }

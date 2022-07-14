@@ -14,16 +14,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.endeavourmining.reportbot;
+package com.endeavourmining.reportbot.settings;
 
 import com.amihaiemil.eoyaml.YamlMapping;
 
 /**
- * Agent in YAML.
+ * Site in YAML.
  *
  * @since 0.1
  */
-public final class YamlAgent implements Agent {
+public final class YamlSite implements Site {
 
     /**
      * YAML content.
@@ -34,7 +34,7 @@ public final class YamlAgent implements Agent {
      * Ctor.
      * @param content YAML content
      */
-    public YamlAgent(final YamlMapping content) {
+    public YamlSite(final YamlMapping content) {
         this.content = content;
     }
 
@@ -44,7 +44,12 @@ public final class YamlAgent implements Agent {
     }
 
     @Override
-    public String address() {
-        return this.content.string("mail_address");
+    public Agents agents() {
+        return new YamlAgents(this.content.yamlSequence("agents"));
+    }
+
+    @Override
+    public String abbreviated() {
+        return this.content.string("abbreviated");
     }
 }

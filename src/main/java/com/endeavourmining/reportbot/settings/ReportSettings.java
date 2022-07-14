@@ -14,30 +14,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.endeavourmining.reportbot;
+package com.endeavourmining.reportbot.settings;
 
 /**
- * Mail server settings.
+ * Report settings.
  *
  * @since 0.1
  */
-public interface MailServerSettings {
+public interface ReportSettings {
 
     /**
-     * Host.
-     * @return Host
+     * Extension authorized.
+     * @return Extension
      */
-    String host();
+    String extension();
 
     /**
-     * Protocol.
-     * @return Protocol
+     * Suffix.
+     * @return Suffix
      */
-    String protocol();
-
-    /**
-     * Port.
-     * @return Port
-     */
-    int port();
+    String suffix();
 }

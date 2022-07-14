@@ -14,30 +14,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.endeavourmining.reportbot;
+package com.endeavourmining.reportbot.mail;
+
+import java.io.IOException;
 
 /**
- * Site.
+ * Mail box.
  *
  * @since 0.1
  */
-public interface Site {
+public interface Mailbox {
 
     /**
-     * Abbreviated.
-     * @return Abbreviated
+     * Number of unread emails.
+     * @return Total
+     * @throws IOException If fails
      */
-    String abbreviated();
+    int count() throws IOException;
 
     /**
-     * Name.
-     * @return Name
+     * Iterates all emails.
+     * @return Iterable
+     * @throws IOException If fails
      */
-    String name();
-
-    /**
-     * Agents.
-     * @return Agents
-     */
-    Agents agents();
+    Iterable<Email> iterate() throws IOException;
 }

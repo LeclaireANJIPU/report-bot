@@ -14,43 +14,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.endeavourmining.reportbot;
+package com.endeavourmining.reportbot.settings;
 
-import com.endeavourmining.reportbot.settings.MailServerSettings;
-import com.icegreen.greenmail.imap.ImapServer;
+import com.amihaiemil.eoyaml.YamlNode;
+import com.amihaiemil.eoyaml.YamlSequence;
+import java.util.Collection;
+import java.util.LinkedList;
 
 /**
- * Fake IMAP server settings.
+ * Sites in YAML.
  *
  * @since 0.1
  */
-public final class FakeImapServerSettings implements MailServerSettings {
+public final class YamlSites implements Sites {
 
     /**
-     * IMAP server.
+     * YAML content.
      */
-    private final ImapServer server;
+    private final YamlSequence content;
 
     /**
      * Ctor.
-     * @param server IMAP server
+     * @param content YAML content
      */
-    public FakeImapServerSettings(final ImapServer server) {
-        this.server = server;
+    public YamlSites(final YamlSequence content) {
+        this.content = content;
     }
 
     @Override
-    public String host() {
-        return this.server.getBindTo();
+    public int count() {
+        return this.content.size();
     }
 
     @Override
-    public String protocol() {
-        return this.server.getProtocol();
-    }
-
-    @Override
-    public int port() {
-        return this.server.getPort();
+    public Iterable<Site> iterate() {
+        final Collection<Site> items = new LinkedList<>();
+        for (final YamlNode yaml : this.content.values()) {
+            items.add(new YamlSite(yaml.asMapping()));
+        }
+        return items;
     }
 }

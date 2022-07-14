@@ -16,6 +16,7 @@
  */
 package com.endeavourmining.reportbot;
 
+import com.endeavourmining.reportbot.settings.Credentials;
 import com.icegreen.greenmail.user.GreenMailUser;
 
 /**
@@ -23,7 +24,7 @@ import com.icegreen.greenmail.user.GreenMailUser;
  *
  * @since 0.1
  */
-final class FakeCredentials implements Credentials {
+public final class FakeCredentials implements Credentials {
 
     /**
      * User.
@@ -34,7 +35,7 @@ final class FakeCredentials implements Credentials {
      * Ctor.
      * @param user Green mail user
      */
-    FakeCredentials(final GreenMailUser user) {
+    public FakeCredentials(final GreenMailUser user) {
         this.user = user;
     }
 

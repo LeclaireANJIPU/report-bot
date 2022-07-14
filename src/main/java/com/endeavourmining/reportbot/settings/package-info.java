@@ -14,24 +14,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.endeavourmining.reportbot;
 
 /**
- * Credentials.
+ * Settings classes.
  *
  * @since 0.1
  */
-public interface Credentials {
-
-    /**
-     * Username or mail address.
-     * @return Login
-     */
-    String login();
-
-    /**
-     * Password.
-     * @return Password
-     */
-    String password();
-}
+package com.endeavourmining.reportbot.settings;
