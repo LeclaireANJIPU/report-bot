@@ -18,10 +18,10 @@ package com.endeavourmining.reportbot.mail;
 
 import com.amihaiemil.eoyaml.Yaml;
 import com.amihaiemil.eoyaml.YamlMapping;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
@@ -84,12 +84,11 @@ public final class EmailFromPath implements Email {
     @Override
     @SuppressWarnings({"PMD.AvoidThrowingRawExceptionTypes", "PMD.AvoidFileStream"})
     public String message() {
-        try (
-            FileReader reader = new FileReader(
-                this.path.resolve("content.txt").toFile(), Charset.forName("UTF-8")
-            )
-        ) {
-            return reader.toString();
+        try {
+            return Files.readString(
+                this.path.resolve("content.txt"),
+                StandardCharsets.UTF_8
+            );
         } catch (final IOException ioe) {
             throw new RuntimeException(ioe);
         }

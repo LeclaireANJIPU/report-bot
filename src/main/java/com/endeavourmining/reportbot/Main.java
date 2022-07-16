@@ -17,8 +17,7 @@
 package com.endeavourmining.reportbot;
 
 import com.endeavourmining.reportbot.mail.EmailFileStorage;
-import com.endeavourmining.reportbot.mail.UnreadEmails;
-import com.endeavourmining.reportbot.mail.UnreadReportEmails;
+import com.endeavourmining.reportbot.mail.EmailFromPath;
 import com.endeavourmining.reportbot.settings.MailSettings;
 import com.endeavourmining.reportbot.settings.Settings;
 import com.endeavourmining.reportbot.settings.SettingsFromPath;
@@ -46,27 +45,27 @@ public final class Main {
      * @throws IOException If fails
      * @checkstyle MagicNumberCheck (10 lines)
      */
+    @SuppressWarnings("PMD.EmptyCatchBlock")
     public static void main(final String[] args) throws IOException {
         final Settings settings = new SettingsFromPath(
             Paths.get(System.getProperty("user.dir"), "settings.yml")
         );
         final MailSettings msettings = settings.mailbox();
-        System.out.println(
-            String.format(
-                "Number of report emails : %s",
-                new UnreadReportEmails(
-                    String.format(
-                        "%s.%s",
-                        settings.report().suffix(),
-                        settings.report().extension()
-                    ),
-                    new UnreadEmails(
-                        msettings.imapServerSettings(),
-                        msettings.credentials(),
-                        new EmailFileStorage(settings.storagePath())
+        while (true) {
+            try {
+                new MailCrawler(
+                    msettings.imapServerSettings(),
+                    msettings.credentials(),
+                    email -> System.out.println(
+                        new EmailFromPath(
+                            new EmailFileStorage(settings.storagePath()).save(email)
+                        ).message()
                     )
-                ).count()
-            )
-        );
+                ).start();
+            } catch (final IOException ioe) {
+                // @checkstyle MethodBodyCommentsCheck (1 line)
+                // do nothing
+            }
+        }
     }
 }
