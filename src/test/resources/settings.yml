@@ -4,41 +4,34 @@ mailbox:
   address: foo@example.com
   credentials:
     login: foo
-    password: 123
+    password: pwd
   smtp_server:
     host: localhost
-    ssl_tls: true
-    port: 465
+    authentication_type: tls
+    port: 1011
   imap_server:
     host: localhost
-    ssl_tls: true
-    port: 993
+    authentication_type: tls
+    port: 1012
 report:
   extension: xlsx
   suffix: _WeeklyActualandPlans
 sites:
-  - site:
-    name: Abidjan Sud
+  - site: Abidjan Sud
     abbreviated: ABJS
     agents:
-      - agent:
-        name: Roland KOFFI
+      - agent: Roland KOFFI
         mail_address: roland.koffi@example.com
-      - agent:
-        name: Sery ASSALE
+      - agent: Sery ASSALE
         mail_address: sery.assale@example.com
-  - site:
-    name: Abidjan Nord
+  - site: Abidjan Nord
     abbreviated: ABJN
     agents:
-      - agent:
-        name: Séraphin TIZIE
+      - agent: Séraphin TIZIE
         mail_address: seraphin.tizie@example.com
-      - agent:
-        name: Akissi NETA
+      - agent: Akissi NETA
         mail_address: akissi.neta@example.com
-      - agent:
-        name: Flore MABEA
+      - agent: Flore MABEA
         mail_address: flore.mabea@example.com
 storage:
   path: "emails"

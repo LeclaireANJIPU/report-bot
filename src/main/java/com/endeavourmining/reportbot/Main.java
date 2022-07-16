@@ -16,9 +16,6 @@
  */
 package com.endeavourmining.reportbot;
 
-import com.endeavourmining.reportbot.mail.EmailFileStorage;
-import com.endeavourmining.reportbot.mail.EmailFromPath;
-import com.endeavourmining.reportbot.settings.MailSettings;
 import com.endeavourmining.reportbot.settings.Settings;
 import com.endeavourmining.reportbot.settings.SettingsFromPath;
 import java.io.IOException;
@@ -48,18 +45,17 @@ public final class Main {
     @SuppressWarnings("PMD.EmptyCatchBlock")
     public static void main(final String[] args) throws IOException {
         final Settings settings = new SettingsFromPath(
-            Paths.get(System.getProperty("user.dir"), "settings.yml")
+            Paths.get(
+                System.getProperty("user.dir"), "settings.yml"
+            )
         );
-        final MailSettings msettings = settings.mailbox();
         while (true) {
             try {
                 new MailCrawler(
-                    msettings.imapServerSettings(),
-                    msettings.credentials(),
-                    email -> System.out.println(
-                        new EmailFromPath(
-                            new EmailFileStorage(settings.storagePath()).save(email)
-                        ).message()
+                    settings.mailSettings(),
+                    new MailProcessorChain(
+                        new StoreMail(settings.storagePath()),
+                        new ReplyAfterSendingReportMail(settings.mailCredentials())
                     )
                 ).start();
             } catch (final IOException ioe) {

@@ -16,8 +16,6 @@
  */
 package com.endeavourmining.reportbot.mail;
 
-import com.endeavourmining.reportbot.settings.Credentials;
-import com.endeavourmining.reportbot.settings.MailServerSettings;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
@@ -41,12 +39,7 @@ public final class UnreadEmails implements Mailbox {
     /**
      * Mail server settings.
      */
-    private final MailServerSettings settings;
-
-    /**
-     * Credentials.
-     */
-    private final Credentials credentials;
+    private final Properties settings;
 
     /**
      * Storage.
@@ -66,15 +59,12 @@ public final class UnreadEmails implements Mailbox {
     /**
      * Ctor.
      * @param settings Mail server settings
-     * @param credentials User credentials
      * @param storage Email storage
      */
     public UnreadEmails(
-        final MailServerSettings settings, final Credentials credentials,
-        final EmailStorage storage
+        final Properties settings, final EmailStorage storage
     ) {
         this.settings = settings;
-        this.credentials = credentials;
         this.storage = storage;
         this.fetched = false;
         this.messages = new LinkedList<>();
@@ -99,34 +89,19 @@ public final class UnreadEmails implements Mailbox {
      */
     private void fetch() throws IOException {
         if (!this.fetched) {
-            final Properties props = System.getProperties();
-            props.setProperty(
-                String.format("mail.%s.socketFactory.fallback", this.settings.protocol()), "false"
-            );
-            props.setProperty(
-                String.format("mail.%s.port", this.settings.protocol()),
-                String.valueOf(this.settings.port())
-            );
-            props.setProperty(
-                String.format("mail.%s.socketFactory.port", this.settings.protocol()),
-                String.valueOf(this.settings.port())
-            );
-            props.put(
-                String.format("mail.%s.host", this.settings.protocol()), this.settings.host()
-            );
             final Session session = Session.getInstance(
-                props,
+                this.settings,
                 new javax.mail.Authenticator() {
                     protected PasswordAuthentication getPasswordAuthentication() {
                         return new PasswordAuthentication(
-                            UnreadEmails.this.credentials.login(),
-                            UnreadEmails.this.credentials.password()
+                            UnreadEmails.this.settings.getProperty("mail.user"),
+                            UnreadEmails.this.settings.getProperty("mail.password")
                         );
                     }
                 }
             );
             try {
-                final Store store = session.getStore(this.settings.protocol());
+                final Store store = session.getStore();
                 store.connect();
                 final Folder folder = store.getFolder("INBOX");
                 folder.open(Folder.READ_WRITE);

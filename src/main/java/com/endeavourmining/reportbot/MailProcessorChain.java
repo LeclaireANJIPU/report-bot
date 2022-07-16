@@ -14,30 +14,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.endeavourmining.reportbot.settings;
+package com.endeavourmining.reportbot;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
+import javax.mail.Message;
 
 /**
- * Mail server settings.
+ * Mail processor chain.
  *
  * @since 0.1
  */
-public interface MailServerSettings {
+public final class MailProcessorChain implements MailProcessor {
 
     /**
-     * Host.
-     * @return Host
+     * Processors.
      */
-    String host();
+    private final Collection<MailProcessor> processors;
 
     /**
-     * Protocol.
-     * @return Protocol
+     * Ctor.
+     * @param processors Processors
      */
-    String protocol();
+    public MailProcessorChain(final MailProcessor... processors) {
+        this.processors = Arrays.asList(processors);
+    }
 
-    /**
-     * Port.
-     * @return Port
-     */
-    int port();
+    @Override
+    public void process(final Message email) throws IOException {
+        for (final MailProcessor processor : this.processors) {
+            processor.process(email);
+        }
+    }
 }

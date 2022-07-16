@@ -16,8 +16,6 @@
  */
 package com.endeavourmining.reportbot;
 
-import com.endeavourmining.reportbot.settings.Credentials;
-import com.endeavourmining.reportbot.settings.MailServerSettings;
 import com.sun.mail.imap.IMAPFolder;
 import java.io.IOException;
 import java.util.Properties;
@@ -49,14 +47,9 @@ public final class MailCrawler {
     private static final int PING_DELAY = 25;
 
     /**
-     * Mail server settings.
+     * Settings.
      */
-    private final MailServerSettings settings;
-
-    /**
-     * Credentials.
-     */
-    private final Credentials credentials;
+    private final Properties settings;
 
     /**
      * Mail processor.
@@ -66,15 +59,12 @@ public final class MailCrawler {
     /**
      * Ctor.
      * @param settings Mail server settings
-     * @param credentials Credentials
      * @param processor Mail processor
      */
     public MailCrawler(
-        final MailServerSettings settings, final Credentials credentials,
-        final MailProcessor processor
+        final Properties settings, final MailProcessor processor
     ) {
         this.settings = settings;
-        this.credentials = credentials;
         this.processor = processor;
     }
 
@@ -84,34 +74,19 @@ public final class MailCrawler {
      */
     @SuppressWarnings({"PMD.AvoidThrowingRawExceptionTypes", "PMD.EmptyCatchBlock"})
     public void start() throws IOException {
-        final Properties props = System.getProperties();
-        props.setProperty(
-            String.format("mail.%s.socketFactory.fallback", this.settings.protocol()), "false"
-        );
-        props.setProperty(
-            String.format("mail.%s.port", this.settings.protocol()),
-            String.valueOf(this.settings.port())
-        );
-        props.setProperty(
-            String.format("mail.%s.socketFactory.port", this.settings.protocol()),
-            String.valueOf(this.settings.port())
-        );
-        props.put(
-            String.format("mail.%s.host", this.settings.protocol()), this.settings.host()
-        );
         final Session session = Session.getInstance(
-            props,
+            this.settings,
             new javax.mail.Authenticator() {
                 protected PasswordAuthentication getPasswordAuthentication() {
                     return new PasswordAuthentication(
-                        MailCrawler.this.credentials.login(),
-                        MailCrawler.this.credentials.password()
+                        MailCrawler.this.settings.getProperty("mail.user"),
+                        MailCrawler.this.settings.getProperty("mail.password")
                     );
                 }
             }
         );
         try {
-            final Store store = session.getStore(this.settings.protocol());
+            final Store store = session.getStore();
             store.connect();
             final Folder folder = store.getFolder("INBOX");
             folder.open(Folder.READ_WRITE);
@@ -129,7 +104,7 @@ public final class MailCrawler {
                                 throw new RuntimeException(ioe);
                             }
                         }
-                    );
+                    ).start();
                 }
             } while (folder.hasNewMessages());
             folder.addMessageCountListener(
@@ -145,7 +120,7 @@ public final class MailCrawler {
                                         throw new RuntimeException(ioe);
                                     }
                                 }
-                            );
+                            ).start();
                         }
                     }
                 }

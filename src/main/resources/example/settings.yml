@@ -7,38 +7,31 @@ mailbox:
     password: 123
   smtp_server:
     host: localhost
-    ssl_tls: true
+    authentication_type: starttls # tls, ssl or no (no authentication)
     port: 465
   imap_server:
     host: localhost
-    ssl_tls: true
+    authentication_type: ssl # tls or no (no authentication)
     port: 993
 report:
   extension: xlsx
   suffix: _WeeklyActualandPlans
 sites:
-  - site:
-    name: Abidjan Sud
+  - site: Abidjan Sud
     abbreviated: ABJS
     agents:
-      - agent:
-        name: Roland KOFFI
+      - agent: Roland KOFFI
         mail_address: roland.koffi@example.com
-      - agent:
-        name: Sery ASSALE
+      - agent: Sery ASSALE
         mail_address: sery.assale@example.com
-  - site:
-    name: Abidjan Nord
+  - site: Abidjan Nord
     abbreviated: ABJN
     agents:
-      - agent:
-        name: Séraphin TIZIE
+      - agent: Séraphin TIZIE
         mail_address: seraphin.tizie@example.com
-      - agent:
-        name: Akissi NETA
+      - agent: Akissi NETA
         mail_address: akissi.neta@example.com
-      - agent:
-        name: Flore MABEA
+      - agent: Flore MABEA
         mail_address: flore.mabea@example.com
 storage:
-  path: "emails"
+  path: "emails" # relative or absolute path

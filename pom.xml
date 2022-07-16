@@ -88,6 +88,11 @@ SOFTWARE.
       <version>1.15.2</version>
     </dependency>
     <dependency>
+      <groupId>org.simplejavamail</groupId>
+      <artifactId>simple-java-mail</artifactId>
+      <version>6.7.6</version>
+    </dependency>
+    <dependency>
       <groupId>com.icegreen</groupId>
       <artifactId>greenmail-junit5</artifactId>
       <version>1.6.9</version>

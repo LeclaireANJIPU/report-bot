@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Properties;
 
 /**
  * Settings from path.
@@ -31,6 +32,11 @@ import java.nio.file.Paths;
  * @since 0.1
  */
 public final class SettingsFromPath implements Settings {
+
+    /**
+     * Configuration file path.
+     */
+    private final Path path;
 
     /**
      * YAML content.
@@ -43,13 +49,25 @@ public final class SettingsFromPath implements Settings {
      * @throws IOException If fails
      */
     public SettingsFromPath(final Path path) throws IOException {
+        this.path = path;
         this.content = SettingsFromPath.load(path);
     }
 
     @Override
-    public MailSettings mailbox() {
-        return new YamlMailSettings(
+    @SuppressWarnings("PMD.AvoidThrowingRawExceptionTypes")
+    public Properties mailSettings() {
+        try {
+            return new MailSettingsFromConfig(this.path.toFile());
+        } catch (final IOException ioe) {
+            throw new RuntimeException(ioe);
+        }
+    }
+
+    @Override
+    public Credentials mailCredentials() {
+        return new YamlCredentials(
             this.content.yamlMapping("mailbox")
+                .yamlMapping("credentials")
         );
     }
 

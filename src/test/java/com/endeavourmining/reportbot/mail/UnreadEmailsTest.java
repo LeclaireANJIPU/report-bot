@@ -17,13 +17,14 @@
 package com.endeavourmining.reportbot.mail;
 
 import com.endeavourmining.reportbot.AvailablePort;
-import com.endeavourmining.reportbot.FakeCredentials;
-import com.endeavourmining.reportbot.FakeImapServerSettings;
+import com.endeavourmining.reportbot.settings.MailSettingsFromConfig;
 import com.icegreen.greenmail.user.GreenMailUser;
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Properties;
 import javax.mail.Message;
 import javax.mail.Session;
 import javax.mail.Transport;
@@ -49,6 +50,11 @@ final class UnreadEmailsTest {
      */
     private GreenMail server;
 
+    /**
+     * Mail settings.
+     */
+    private Properties settings;
+
     @BeforeEach
     void setUp() throws IOException {
         this.server = new GreenMail(
@@ -58,26 +64,34 @@ final class UnreadEmailsTest {
             }
         );
         this.server.start();
+        this.settings = new MailSettingsFromConfig(
+            new File("./src/test/resources/settings.yml")
+        );
+        final int iport = this.server.getImap().getPort();
+        this.settings.setProperty("mail.imap.port", String.valueOf(iport));
+        this.settings.setProperty("mail.imap.socketFactory.port", String.valueOf(iport));
+        final int sport = this.server.getSmtp().getPort();
+        this.settings.setProperty("mail.smtp.port", String.valueOf(sport));
+        this.settings.setProperty("mail.smtp.socketFactory.port", String.valueOf(sport));
     }
 
     @Test
     void getNumberOfUnreadEmails(@TempDir final Path temp) throws Exception {
         final GreenMailUser user = this.server.setUser(
-            "bar@example.com",
-            "bar",
+            "foo@example.com",
+            "foo",
             "pwd"
         );
         final Session session = this.server.getSmtp().createSession();
         final Message msg = new MimeMessage(session);
-        msg.setFrom(new InternetAddress("foo@example.com"));
+        msg.setFrom(new InternetAddress("bar@example.com"));
         msg.addRecipient(Message.RecipientType.TO, new InternetAddress(user.getEmail()));
         msg.setSubject("Test 1");
         msg.setText("This is email for test 1 purpose.");
         Transport.send(msg);
         MatcherAssert.assertThat(
             new UnreadEmails(
-                new FakeImapServerSettings(this.server.getImap()),
-                new FakeCredentials(user),
+                this.settings,
                 new EmailFileStorage(temp)
             ).count(),
             new IsEqual<>(1)

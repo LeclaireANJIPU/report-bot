@@ -17,6 +17,7 @@
 package com.endeavourmining.reportbot.settings;
 
 import java.nio.file.Path;
+import java.util.Properties;
 
 /**
  * App settings.
@@ -29,7 +30,13 @@ public interface Settings {
      * Mail settings.
      * @return Settings
      */
-    MailSettings mailbox();
+    Properties mailSettings();
+
+    /**
+     * Bot mail credentials.
+     * @return Credentials
+     */
+    Credentials mailCredentials();
 
     /**
      * Report settings.

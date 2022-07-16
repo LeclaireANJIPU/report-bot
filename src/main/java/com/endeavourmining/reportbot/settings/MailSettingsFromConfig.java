@@ -16,50 +16,41 @@
  */
 package com.endeavourmining.reportbot.settings;
 
-import com.amihaiemil.eoyaml.YamlMapping;
+import java.io.File;
+import java.io.IOException;
+import java.util.Properties;
 
 /**
- * Smtp settings in YAML.
+ * Mail settings from configuration file.
  *
  * @since 0.1
  */
-public final class YamlSmtpServerSettings implements MailServerSettings {
+public final class MailSettingsFromConfig extends Properties {
 
     /**
-     * YAML content.
+     * Serial version uid.
      */
-    private final YamlMapping content;
+    private static final long serialVersionUID = 4112578634029874840L;
 
     /**
      * Ctor.
-     * @param content YAML content
+     * @param config Configuration file path
+     * @throws IOException If fails
      */
-    public YamlSmtpServerSettings(final YamlMapping content) {
-        this.content = content;
+    public MailSettingsFromConfig(final File config) throws IOException {
+        super(MailSettingsFromConfig.transform(config));
     }
 
-    @Override
-    public String host() {
-        return this.content.string("host");
-    }
-
-    @Override
-    public String protocol() {
-        final String protocol;
-        if (
-            Boolean.parseBoolean(
-                this.content.string("ssl_tls")
-            )
-        ) {
-            protocol = "smtps";
-        } else {
-            protocol = "smtp";
-        }
-        return protocol;
-    }
-
-    @Override
-    public int port() {
-        return this.content.integer("port");
+    /**
+     * Transform configuration file to properties.
+     * @param config Configuration file
+     * @return Properties
+     * @throws IOException If fails
+     */
+    private static Properties transform(final File config) throws IOException {
+        final Properties props = System.getProperties();
+        props.putAll(new ImapSettingsFromConfig(config));
+        props.putAll(new SmtpSettingsFromConfig(config));
+        return props;
     }
 }

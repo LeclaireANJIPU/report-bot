@@ -16,41 +16,33 @@
  */
 package com.endeavourmining.reportbot;
 
-import com.endeavourmining.reportbot.settings.MailServerSettings;
-import com.icegreen.greenmail.imap.ImapServer;
+import com.endeavourmining.reportbot.mail.EmailFileStorage;
+import java.io.IOException;
+import java.nio.file.Path;
+import javax.mail.Message;
 
 /**
- * Fake IMAP server settings.
+ * Store the mail handled.
  *
  * @since 0.1
  */
-public final class FakeImapServerSettings implements MailServerSettings {
+public final class StoreMail implements MailProcessor {
 
     /**
-     * IMAP server.
+     * Storage path.
      */
-    private final ImapServer server;
+    private final Path path;
 
     /**
      * Ctor.
-     * @param server IMAP server
+     * @param path Storage path
      */
-    public FakeImapServerSettings(final ImapServer server) {
-        this.server = server;
+    public StoreMail(final Path path) {
+        this.path = path;
     }
 
     @Override
-    public String host() {
-        return this.server.getBindTo();
-    }
-
-    @Override
-    public String protocol() {
-        return this.server.getProtocol();
-    }
-
-    @Override
-    public int port() {
-        return this.server.getPort();
+    public void process(final Message email) throws IOException {
+        new EmailFileStorage(this.path).save(email);
     }
 }
