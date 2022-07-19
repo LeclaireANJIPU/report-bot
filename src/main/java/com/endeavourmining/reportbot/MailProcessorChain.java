@@ -19,6 +19,7 @@ package com.endeavourmining.reportbot;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
+import javax.mail.Folder;
 import javax.mail.Message;
 
 /**
@@ -42,9 +43,9 @@ public final class MailProcessorChain implements MailProcessor {
     }
 
     @Override
-    public void process(final Message email) throws IOException {
+    public void process(final Message email, final Folder folder) throws IOException {
         for (final MailProcessor processor : this.processors) {
-            processor.process(email);
+            processor.process(email, folder);
         }
     }
 }

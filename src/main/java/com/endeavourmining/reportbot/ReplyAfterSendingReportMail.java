@@ -18,6 +18,7 @@ package com.endeavourmining.reportbot;
 
 import com.endeavourmining.reportbot.settings.Credentials;
 import java.io.IOException;
+import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Transport;
@@ -47,7 +48,7 @@ public final class ReplyAfterSendingReportMail implements MailProcessor {
 
     @Override
     @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-    public void process(final Message email) throws IOException {
+    public void process(final Message email, final Folder folder) throws IOException {
         try {
             Transport.send(
                 EmailConverter.emailToMimeMessage(
@@ -63,8 +64,8 @@ public final class ReplyAfterSendingReportMail implements MailProcessor {
                                 "<br>",
                                 "Best regards,<br>",
                                 "<br>",
-                                "<b>Report Bot</b>",
-                                "<br>",
+                                "<b>Report Bot</b><br>",
+                                "Version 0.1.0<br>",
                                 "<br>",
                                 "------------ Original email included below ------------",
                                 "<br>"

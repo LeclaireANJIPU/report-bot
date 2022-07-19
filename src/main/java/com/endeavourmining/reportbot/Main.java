@@ -55,7 +55,11 @@ public final class Main {
                     settings.mailSettings(),
                     new MailProcessorChain(
                         new StoreMail(settings.storagePath()),
-                        new ReplyAfterSendingReportMail(settings.mailCredentials())
+                        new ReplyAfterSendingReportMail(settings.mailCredentials()),
+                        new IdentifySiteProcessor(
+                            settings.storagePath(), settings.report(), settings.sites(),
+                            settings.mailCredentials()
+                        )
                     )
                 ).start();
             } catch (final IOException ioe) {

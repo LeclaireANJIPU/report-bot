@@ -28,14 +28,16 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.UUID;
+import java.util.Locale;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.mail.BodyPart;
+import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
 import javax.mail.Part;
+import javax.mail.UIDFolder;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMultipart;
 
@@ -76,11 +78,16 @@ public final class EmailFileStorage implements EmailStorage {
 
     @Override
     @SuppressWarnings("PMD.AvoidFileStream")
-    public Path save(final Message message) throws IOException {
+    public Path save(final Message message, final Folder folder) throws IOException {
         try {
-            final Path folder = this.path.resolve(EmailStatus.TO_TREAT.name())
-                .resolve(UUID.randomUUID().toString());
-            folder.toFile().mkdirs();
+            final Path ffolder = this.path.resolve(
+                EmailStatus.TO_TREAT.name().toLowerCase(Locale.ENGLISH)
+            ).resolve(
+                Long.toString(
+                    ((UIDFolder) folder).getUID(message)
+                )
+            );
+            ffolder.toFile().mkdirs();
             YamlSequenceBuilder attyml = Yaml.createYamlSequenceBuilder();
             if (message.getContentType().contains("multipart")) {
                 final Multipart multipart = (Multipart) message.getContent();
@@ -88,7 +95,11 @@ public final class EmailFileStorage implements EmailStorage {
                     final MimeBodyPart part = (MimeBodyPart) multipart.getBodyPart(idx);
                     if (Part.ATTACHMENT.equalsIgnoreCase(part.getDisposition())) {
                         attyml = attyml.add(part.getFileName());
-                        part.saveFile(folder.resolve(part.getFileName()).toFile());
+                        part.saveFile(
+                            ffolder.resolve(
+                                EmailFileStorage.sanitizeFilename(part.getFileName())
+                            ).toFile()
+                        );
                     }
                 }
             }
@@ -113,7 +124,7 @@ public final class EmailFileStorage implements EmailStorage {
                 .build();
             try (
                 FileWriter writer = new FileWriter(
-                    folder.resolve("metadata.yml").toFile(),
+                    ffolder.resolve("metadata.yml").toFile(),
                     Charset.forName(EmailFileStorage.UTF_8)
                 )
             ) {
@@ -121,13 +132,13 @@ public final class EmailFileStorage implements EmailStorage {
             }
             try (
                 FileWriter writer = new FileWriter(
-                    folder.resolve("content.txt").toFile(),
+                    ffolder.resolve("content.txt").toFile(),
                     Charset.forName(EmailFileStorage.UTF_8)
                 )
             ) {
                 writer.write(EmailFileStorage.textContentOf(message));
             }
-            return folder;
+            return ffolder;
         } catch (final MessagingException exe) {
             throw new IOException(exe);
         }
@@ -203,5 +214,14 @@ public final class EmailFileStorage implements EmailStorage {
             }
         }
         return String.join(System.lineSeparator(), texts);
+    }
+
+    /**
+     * Sanitizes filename.
+     * @param name Filename
+     * @return Cleaned filename
+     */
+    private static String sanitizeFilename(final String name) {
+        return name.replaceAll("[^a-zA-Z0-9-_\\.]", "_");
     }
 }

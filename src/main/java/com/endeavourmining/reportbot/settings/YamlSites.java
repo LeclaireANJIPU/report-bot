@@ -54,4 +54,15 @@ public final class YamlSites implements Sites {
         }
         return items;
     }
+
+    @Override
+    public boolean has(final String abbreviated) {
+        boolean contains = false;
+        for (final Site site : this.iterate()) {
+            if (site.abbreviated().equals(abbreviated)) {
+                contains = true;
+            }
+        }
+        return contains;
+    }
 }

@@ -18,6 +18,7 @@ package com.endeavourmining.reportbot.mail;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import javax.mail.Folder;
 import javax.mail.Message;
 
 /**
@@ -30,10 +31,11 @@ public interface EmailStorage {
     /**
      * Save an email.
      * @param message Email
+     * @param folder Folder
      * @return Folder of email
      * @throws IOException If fails
      */
-    Path save(Message message) throws IOException;
+    Path save(Message message, Folder folder) throws IOException;
 
     /**
      * Iterate emails by status.

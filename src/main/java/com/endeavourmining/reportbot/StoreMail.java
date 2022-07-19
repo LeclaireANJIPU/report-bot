@@ -19,6 +19,7 @@ package com.endeavourmining.reportbot;
 import com.endeavourmining.reportbot.mail.EmailFileStorage;
 import java.io.IOException;
 import java.nio.file.Path;
+import javax.mail.Folder;
 import javax.mail.Message;
 
 /**
@@ -42,7 +43,7 @@ public final class StoreMail implements MailProcessor {
     }
 
     @Override
-    public void process(final Message email) throws IOException {
-        new EmailFileStorage(this.path).save(email);
+    public void process(final Message email, final Folder folder) throws IOException {
+        new EmailFileStorage(this.path).save(email, folder);
     }
 }

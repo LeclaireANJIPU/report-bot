@@ -99,7 +99,7 @@ public final class MailCrawler {
                     new Thread(
                         () -> {
                             try {
-                                this.processor.process(message);
+                                this.processor.process(message, folder);
                             } catch (final IOException ioe) {
                                 throw new RuntimeException(ioe);
                             }
@@ -115,7 +115,7 @@ public final class MailCrawler {
                             new Thread(
                                 () -> {
                                     try {
-                                        MailCrawler.this.processor.process(message);
+                                        MailCrawler.this.processor.process(message, folder);
                                     } catch (final IOException ioe) {
                                         throw new RuntimeException(ioe);
                                     }

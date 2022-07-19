@@ -8,7 +8,7 @@ mailbox:
   smtp_server:
     host: localhost
     authentication_type: starttls # tls, ssl or no (no authentication)
-    port: 465
+    port: 587
   imap_server:
     host: localhost
     authentication_type: ssl # tls or no (no authentication)
@@ -17,21 +17,12 @@ report:
   extension: xlsx
   suffix: _WeeklyActualandPlans
 sites:
-  - site: Abidjan Sud
-    abbreviated: ABJS
+  - site: Site tantanpion
+    abbreviated: STAN
     agents:
-      - agent: Roland KOFFI
-        mail_address: roland.koffi@example.com
-      - agent: Sery ASSALE
-        mail_address: sery.assale@example.com
-  - site: Abidjan Nord
-    abbreviated: ABJN
-    agents:
-      - agent: Séraphin TIZIE
-        mail_address: seraphin.tizie@example.com
-      - agent: Akissi NETA
-        mail_address: akissi.neta@example.com
-      - agent: Flore MABEA
-        mail_address: flore.mabea@example.com
+      - agent: Toto BRABRA
+        mail_address: toto.brabra@example.com
+      - agent: Tata ROCO
+        mail_address: tata.roco@example.com
 storage:
   path: "emails" # relative or absolute path

@@ -111,7 +111,7 @@ public final class UnreadEmails implements Mailbox {
                     )
                 ) {
                     this.messages.add(
-                        new EmailFromPath(this.storage.save(message))
+                        new EmailFromPath(this.storage.save(message, folder))
                     );
                 }
                 folder.close(false);

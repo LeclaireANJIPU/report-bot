@@ -34,4 +34,11 @@ public interface Sites {
      * @return Iterable
      */
     Iterable<Site> iterate();
+
+    /**
+     * Has abbreviated.
+     * @param abbreviated Abbreviated to check
+     * @return Yes or not
+     */
+    boolean has(String abbreviated);
 }

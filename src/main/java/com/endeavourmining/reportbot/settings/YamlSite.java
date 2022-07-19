@@ -40,7 +40,7 @@ public final class YamlSite implements Site {
 
     @Override
     public String name() {
-        return this.content.string("name");
+        return this.content.string("site");
     }
 
     @Override

@@ -17,6 +17,7 @@
 package com.endeavourmining.reportbot;
 
 import java.io.IOException;
+import javax.mail.Folder;
 import javax.mail.Message;
 
 /**
@@ -29,7 +30,8 @@ public interface MailProcessor {
     /**
      * Process email.
      * @param email Email
+     * @param folder Folder
      * @throws IOException If fails
      */
-    void process(Message email) throws IOException;
+    void process(Message email, Folder folder) throws IOException;
 }
