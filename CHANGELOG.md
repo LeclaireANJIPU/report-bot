@@ -1,3 +1,9 @@
+# Release 0.2.0
+- feat: identify the week of a report email
+- feat: identify a site where email come from
+- feat: identify site of a report
+- release: update github actions
+
 # Release 0.1.0
 
  - feat: reply to the report sender

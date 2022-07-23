@@ -52,13 +52,14 @@ storage:
 
 The storage for mail contains folders :
 - `to_treat`: contains new incoming emails
-- `site_identified`: contains emails for which site has been identified
+- `done`: contains emails have been successfully treated
 - `error`: contains emails that failed to be treated
 
 ## Structure of an email folder in the storage
 An email loaded by the Bot is saved in a folder (with UUID name) structured like this :
 - `metadata.yml`: YAML file that contains mail metadata
-- `content.txt`: Mail message content
+- `subject.txt`: Subject
+- `content.txt`: Text content
 - List of attachments
 
 ## Run Bot locally
