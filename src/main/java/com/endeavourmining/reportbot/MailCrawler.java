@@ -16,9 +16,12 @@
  */
 package com.endeavourmining.reportbot;
 
+import com.endeavourmining.reportbot.mail.EmailStorage;
+import com.endeavourmining.reportbot.mail.MailConnector;
+import com.endeavourmining.reportbot.mail.MailReplier;
+import com.endeavourmining.reportbot.processor.MailProcessor;
 import com.sun.mail.imap.IMAPFolder;
 import java.io.IOException;
-import java.util.Properties;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -26,9 +29,8 @@ import javax.mail.Flags;
 import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
 import javax.mail.Store;
+import javax.mail.UIDFolder;
 import javax.mail.event.MessageCountAdapter;
 import javax.mail.event.MessageCountEvent;
 import javax.mail.search.FlagTerm;
@@ -49,7 +51,12 @@ public final class MailCrawler {
     /**
      * Settings.
      */
-    private final Properties settings;
+    private final MailConnector connector;
+
+    /**
+     * Storage for emails.
+     */
+    private final EmailStorage storage;
 
     /**
      * Mail processor.
@@ -57,15 +64,26 @@ public final class MailCrawler {
     private final MailProcessor processor;
 
     /**
+     * Mail replier.
+     */
+    private final MailReplier replier;
+
+    /**
      * Ctor.
-     * @param settings Mail server settings
-     * @param processor Mail processor
+     * @param connector Connector
+     * @param storage Storage
+     * @param processor Processor
+     * @param replier Replier
+     * @checkstyle ParameterNumberCheck (5 lines)
      */
     public MailCrawler(
-        final Properties settings, final MailProcessor processor
+        final MailConnector connector, final EmailStorage storage,
+        final MailProcessor processor, final MailReplier replier
     ) {
-        this.settings = settings;
+        this.connector = connector;
+        this.storage = storage;
         this.processor = processor;
+        this.replier = replier;
     }
 
     /**
@@ -74,19 +92,8 @@ public final class MailCrawler {
      */
     @SuppressWarnings({"PMD.AvoidThrowingRawExceptionTypes", "PMD.EmptyCatchBlock"})
     public void start() throws IOException {
-        final Session session = Session.getInstance(
-            this.settings,
-            new javax.mail.Authenticator() {
-                protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication(
-                        MailCrawler.this.settings.getProperty("mail.user"),
-                        MailCrawler.this.settings.getProperty("mail.password")
-                    );
-                }
-            }
-        );
         try {
-            final Store store = session.getStore();
+            final Store store = this.connector.session().getStore();
             store.connect();
             final Folder folder = store.getFolder("INBOX");
             folder.open(Folder.READ_WRITE);
@@ -97,11 +104,20 @@ public final class MailCrawler {
                     )
                 ) {
                     new Thread(
+                        // @checkstyle AnonInnerLengthCheck (30 lines)
                         () -> {
                             try {
-                                this.processor.process(message, folder);
-                            } catch (final IOException ioe) {
-                                throw new RuntimeException(ioe);
+                                this.processor.process(
+                                    this.storage.save(
+                                        message, ((UIDFolder) folder).getUID(message)
+                                    )
+                                );
+                            } catch (final IllegalArgumentException iae) {
+                                this.replier.reply(
+                                    message, iae.getLocalizedMessage()
+                                );
+                            } catch (final IOException | MessagingException exe) {
+                                throw new RuntimeException(exe);
                             }
                         }
                     ).start();
@@ -115,9 +131,17 @@ public final class MailCrawler {
                             new Thread(
                                 () -> {
                                     try {
-                                        MailCrawler.this.processor.process(message, folder);
-                                    } catch (final IOException ioe) {
-                                        throw new RuntimeException(ioe);
+                                        MailCrawler.this.processor.process(
+                                            MailCrawler.this.storage.save(
+                                                message, ((UIDFolder) folder).getUID(message)
+                                            )
+                                        );
+                                    } catch (final IllegalArgumentException iae) {
+                                        MailCrawler.this.replier.reply(
+                                            message, iae.getLocalizedMessage()
+                                        );
+                                    } catch (final IOException | MessagingException exe) {
+                                        throw new RuntimeException(exe);
                                     }
                                 }
                             ).start();

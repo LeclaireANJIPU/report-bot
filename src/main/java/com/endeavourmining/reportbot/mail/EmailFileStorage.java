@@ -21,7 +21,7 @@ import com.amihaiemil.eoyaml.YamlMapping;
 import com.amihaiemil.eoyaml.YamlSequenceBuilder;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.ZoneId;
@@ -32,12 +32,10 @@ import java.util.Locale;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.mail.BodyPart;
-import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
 import javax.mail.Part;
-import javax.mail.UIDFolder;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMultipart;
 
@@ -52,11 +50,6 @@ public final class EmailFileStorage implements EmailStorage {
      * Text plain.
      */
     private static final String TEXT_PLAIN = "text/plain";
-
-    /**
-     * UTF-8 encoding.
-     */
-    private static final String UTF_8 = "UTF-8";
 
     /**
      * Time zone to use.
@@ -78,15 +71,11 @@ public final class EmailFileStorage implements EmailStorage {
 
     @Override
     @SuppressWarnings("PMD.AvoidFileStream")
-    public Path save(final Message message, final Folder folder) throws IOException {
+    public Email save(final Message message, final Long uid) throws IOException {
         try {
             final Path ffolder = this.path.resolve(
                 EmailStatus.TO_TREAT.name().toLowerCase(Locale.ENGLISH)
-            ).resolve(
-                Long.toString(
-                    ((UIDFolder) folder).getUID(message)
-                )
-            );
+            ).resolve(uid.toString());
             ffolder.toFile().mkdirs();
             YamlSequenceBuilder attyml = Yaml.createYamlSequenceBuilder();
             if (message.getContentType().contains("multipart")) {
@@ -104,6 +93,7 @@ public final class EmailFileStorage implements EmailStorage {
                 }
             }
             final YamlMapping yaml = Yaml.createYamlMappingBuilder()
+                .add("uid", uid.toString())
                 .add(
                     "sent_date",
                     message.getSentDate().toInstant()
@@ -119,26 +109,31 @@ public final class EmailFileStorage implements EmailStorage {
                         .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
                 )
                 .add("from", message.getFrom()[0].toString())
-                .add("subject", message.getSubject())
                 .add("attachments", attyml.build())
                 .build();
+            Yaml.createYamlPrinter(
+                new FileWriter(
+                    ffolder.resolve("metadata.yml").toFile(),
+                    StandardCharsets.UTF_8
+                )
+            ).print(yaml);
             try (
                 FileWriter writer = new FileWriter(
-                    ffolder.resolve("metadata.yml").toFile(),
-                    Charset.forName(EmailFileStorage.UTF_8)
+                    ffolder.resolve("subject.txt").toFile(),
+                    StandardCharsets.UTF_8
                 )
             ) {
-                writer.write(yaml.toString());
+                writer.write(message.getSubject());
             }
             try (
                 FileWriter writer = new FileWriter(
                     ffolder.resolve("content.txt").toFile(),
-                    Charset.forName(EmailFileStorage.UTF_8)
+                    StandardCharsets.UTF_8
                 )
             ) {
                 writer.write(EmailFileStorage.textContentOf(message));
             }
-            return ffolder;
+            return new EmailFromPath(ffolder);
         } catch (final MessagingException exe) {
             throw new IOException(exe);
         }

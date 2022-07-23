@@ -19,14 +19,12 @@ package com.endeavourmining.reportbot.mail;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Properties;
 import javax.mail.Flags;
 import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
 import javax.mail.Store;
+import javax.mail.UIDFolder;
 import javax.mail.search.FlagTerm;
 
 /**
@@ -34,12 +32,12 @@ import javax.mail.search.FlagTerm;
  *
  * @since 0.1
  */
-public final class UnreadEmails implements Mailbox {
+public final class UnreadEmails implements Emails {
 
     /**
-     * Mail server settings.
+     * Mail connector.
      */
-    private final Properties settings;
+    private final MailConnector connector;
 
     /**
      * Storage.
@@ -58,13 +56,13 @@ public final class UnreadEmails implements Mailbox {
 
     /**
      * Ctor.
-     * @param settings Mail server settings
+     * @param connector Mail connector
      * @param storage Email storage
      */
     public UnreadEmails(
-        final Properties settings, final EmailStorage storage
+        final MailConnector connector, final EmailStorage storage
     ) {
-        this.settings = settings;
+        this.connector = connector;
         this.storage = storage;
         this.fetched = false;
         this.messages = new LinkedList<>();
@@ -89,19 +87,8 @@ public final class UnreadEmails implements Mailbox {
      */
     private void fetch() throws IOException {
         if (!this.fetched) {
-            final Session session = Session.getInstance(
-                this.settings,
-                new javax.mail.Authenticator() {
-                    protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication(
-                            UnreadEmails.this.settings.getProperty("mail.user"),
-                            UnreadEmails.this.settings.getProperty("mail.password")
-                        );
-                    }
-                }
-            );
             try {
-                final Store store = session.getStore();
+                final Store store = this.connector.session().getStore();
                 store.connect();
                 final Folder folder = store.getFolder("INBOX");
                 folder.open(Folder.READ_WRITE);
@@ -111,7 +98,7 @@ public final class UnreadEmails implements Mailbox {
                     )
                 ) {
                     this.messages.add(
-                        new EmailFromPath(this.storage.save(message, folder))
+                        this.storage.save(message, ((UIDFolder) folder).getUID(message))
                     );
                 }
                 folder.close(false);

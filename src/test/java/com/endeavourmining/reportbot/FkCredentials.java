@@ -16,36 +16,22 @@
  */
 package com.endeavourmining.reportbot;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collection;
-import javax.mail.Folder;
-import javax.mail.Message;
+import com.endeavourmining.reportbot.settings.Credentials;
 
 /**
- * Mail processor chain.
+ * Fake credentials.
  *
  * @since 0.1
  */
-public final class MailProcessorChain implements MailProcessor {
+public final  class FkCredentials implements Credentials {
 
-    /**
-     * Processors.
-     */
-    private final Collection<MailProcessor> processors;
-
-    /**
-     * Ctor.
-     * @param processors Processors
-     */
-    public MailProcessorChain(final MailProcessor... processors) {
-        this.processors = Arrays.asList(processors);
+    @Override
+    public String login() {
+        return "foo";
     }
 
     @Override
-    public void process(final Message email, final Folder folder) throws IOException {
-        for (final MailProcessor processor : this.processors) {
-            processor.process(email, folder);
-        }
+    public String password() {
+        return "pwd";
     }
 }

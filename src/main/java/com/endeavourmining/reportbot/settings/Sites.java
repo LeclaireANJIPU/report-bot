@@ -16,6 +16,9 @@
  */
 package com.endeavourmining.reportbot.settings;
 
+import com.endeavourmining.reportbot.mail.Email;
+import java.util.Optional;
+
 /**
  * Sites.
  *
@@ -41,4 +44,11 @@ public interface Sites {
      * @return Yes or not
      */
     boolean has(String abbreviated);
+
+    /**
+     * Gets site of email.
+     * @param email Email
+     * @return Optional site
+     */
+    Optional<Site> siteOf(Email email);
 }

@@ -14,24 +14,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.endeavourmining.reportbot;
-
-import java.io.IOException;
-import javax.mail.Folder;
-import javax.mail.Message;
 
 /**
- * Mail processor.
+ * Email processor classes.
  *
  * @since 0.1
  */
-public interface MailProcessor {
-
-    /**
-     * Process email.
-     * @param email Email
-     * @param folder Folder
-     * @throws IOException If fails
-     */
-    void process(Message email, Folder folder) throws IOException;
-}
+package com.endeavourmining.reportbot.processor;

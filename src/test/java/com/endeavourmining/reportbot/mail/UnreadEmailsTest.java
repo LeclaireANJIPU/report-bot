@@ -17,6 +17,8 @@
 package com.endeavourmining.reportbot.mail;
 
 import com.endeavourmining.reportbot.AvailablePort;
+import com.endeavourmining.reportbot.FkCredentials;
+import com.endeavourmining.reportbot.settings.Credentials;
 import com.endeavourmining.reportbot.settings.MailSettingsFromConfig;
 import com.icegreen.greenmail.user.GreenMailUser;
 import com.icegreen.greenmail.util.GreenMail;
@@ -77,10 +79,11 @@ final class UnreadEmailsTest {
 
     @Test
     void getNumberOfUnreadEmails(@TempDir final Path temp) throws Exception {
+        final Credentials credentials = new FkCredentials();
         final GreenMailUser user = this.server.setUser(
             "foo@example.com",
-            "foo",
-            "pwd"
+            credentials.login(),
+            credentials.password()
         );
         final Session session = this.server.getSmtp().createSession();
         final Message msg = new MimeMessage(session);
@@ -91,7 +94,7 @@ final class UnreadEmailsTest {
         Transport.send(msg);
         MatcherAssert.assertThat(
             new UnreadEmails(
-                this.settings,
+                new SimpleMailConnector(credentials, this.settings),
                 new EmailFileStorage(temp)
             ).count(),
             new IsEqual<>(1)

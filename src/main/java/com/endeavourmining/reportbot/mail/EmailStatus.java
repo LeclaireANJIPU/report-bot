@@ -29,9 +29,9 @@ public enum EmailStatus {
     TO_TREAT,
 
     /**
-     * Site identified.
+     * Email treated successfully.
      */
-    SITE_IDENTIFIED,
+    DONE,
 
     /**
      * Emails with errors.

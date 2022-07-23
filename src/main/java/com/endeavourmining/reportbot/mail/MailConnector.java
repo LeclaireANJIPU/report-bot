@@ -14,37 +14,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.endeavourmining.reportbot.settings;
+package com.endeavourmining.reportbot.mail;
+
+import javax.mail.Session;
 
 /**
- * Site.
+ * Mail connector.
  *
  * @since 0.1
  */
-public interface Site {
+public interface MailConnector {
 
     /**
-     * Abbreviated.
-     * @return Abbreviated
+     * Get session.
+     * @return Session
      */
-    String abbreviated();
-
-    /**
-     * Name.
-     * @return Name
-     */
-    String name();
-
-    /**
-     * Agents.
-     * @return Agents
-     */
-    Agents agents();
-
-    /**
-     * Check if address is authorized.
-     * @param address Mail address
-     * @return Authorized or not
-     */
-    boolean authorize(String address);
+    Session session();
 }

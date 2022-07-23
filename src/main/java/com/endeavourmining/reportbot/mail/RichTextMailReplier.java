@@ -14,11 +14,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.endeavourmining.reportbot;
+package com.endeavourmining.reportbot.mail;
 
-import com.endeavourmining.reportbot.settings.Credentials;
-import java.io.IOException;
-import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Transport;
@@ -27,56 +24,49 @@ import org.simplejavamail.converter.EmailConverter;
 import org.simplejavamail.email.EmailBuilder;
 
 /**
- * Reply after sending report mail.
+ * Mail replier with rich text content.
  *
  * @since 0.1
  */
-public final class ReplyAfterSendingReportMail implements MailProcessor {
+@SuppressWarnings("PMD.AvoidThrowingRawExceptionTypes")
+public final class RichTextMailReplier implements MailReplier {
 
     /**
-     * Credentials.
+     * From.
      */
-    private final Credentials credentials;
+    private final String from;
 
     /**
      * Ctor.
-     * @param credentials Credentials
+     * @param from From
      */
-    public ReplyAfterSendingReportMail(final Credentials credentials) {
-        this.credentials = credentials;
+    public RichTextMailReplier(final String from) {
+        this.from = from;
     }
 
     @Override
-    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-    public void process(final Message email, final Folder folder) throws IOException {
+    public void reply(final Message email, final String response) {
         try {
             Transport.send(
                 EmailConverter.emailToMimeMessage(
                     EmailBuilder.replyingTo((MimeMessage) email)
-                        .from(this.credentials.login())
+                        .from(this.from)
                         .prependTextHTML(
                             String.join(
-                                "",
+                                "<br>",
                                 "Hello,<br>",
-                                "<br>",
-                                "Thanks you to submit your report. ",
-                                "It will be processed very soon. :)<br>",
-                                "<br>",
+                                response,
                                 "Best regards,<br>",
-                                "<br>",
-                                "<b>Report Bot</b><br>",
+                                "<b>Report Bot</b>",
                                 "Version 0.1.0<br>",
-                                "<br>",
-                                "------------ Original email included below ------------",
-                                "<br>"
+                                "------------ Original email included below ------------<br>"
                             )
-                        )
-                        .buildEmail(),
+                        ).buildEmail(),
                     email.getSession()
                 )
             );
-        } catch (final MessagingException mes) {
-            throw new IOException(mes);
+        } catch (final MessagingException msge) {
+            throw new RuntimeException(msge);
         }
     }
 }

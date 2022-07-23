@@ -18,8 +18,10 @@ package com.endeavourmining.reportbot.settings;
 
 import com.amihaiemil.eoyaml.YamlNode;
 import com.amihaiemil.eoyaml.YamlSequence;
+import com.endeavourmining.reportbot.mail.Email;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.Optional;
 
 /**
  * Sites in YAML.
@@ -64,5 +66,21 @@ public final class YamlSites implements Sites {
             }
         }
         return contains;
+    }
+
+    @Override
+    public Optional<Site> siteOf(final Email email) {
+        Optional<Site> opt = Optional.empty();
+        final String name = email.subject().split(":")[0].trim();
+        for (final Site site: this.iterate()) {
+            if (
+                name.equalsIgnoreCase(site.name().trim())
+                    || name.equalsIgnoreCase(site.abbreviated().trim())
+            ) {
+                opt = Optional.of(site);
+                break;
+            }
+        }
+        return opt;
     }
 }

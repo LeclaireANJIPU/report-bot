@@ -16,26 +16,19 @@
  */
 package com.endeavourmining.reportbot.mail;
 
-import java.io.IOException;
+import javax.mail.Message;
 
 /**
- * Mail box.
+ * Mail replier.
  *
  * @since 0.1
  */
-public interface Mailbox {
+public interface MailReplier {
 
     /**
-     * Number of unread emails.
-     * @return Total
-     * @throws IOException If fails
+     * Replies to email.
+     * @param email Email
+     * @param response Response content
      */
-    int count() throws IOException;
-
-    /**
-     * Iterates all emails.
-     * @return Iterable
-     * @throws IOException If fails
-     */
-    Iterable<Email> iterate() throws IOException;
+    void reply(Message email, String response);
 }

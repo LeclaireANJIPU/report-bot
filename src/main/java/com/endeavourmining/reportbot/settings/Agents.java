@@ -34,4 +34,11 @@ public interface Agents {
      * @return Iterable
      */
     Iterable<Agent> iterate();
+
+    /**
+     * Has mail address.
+     * @param address Mail address
+     * @return Has or not
+     */
+    boolean has(String address);
 }

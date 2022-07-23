@@ -49,6 +49,20 @@ public final class YamlSite implements Site {
     }
 
     @Override
+    public boolean authorize(final String address) {
+        boolean authorized = false;
+        if (!address.isBlank()) {
+            for (final Agent agent : this.agents().iterate()) {
+                if (address.contains(agent.address())) {
+                    authorized = true;
+                    break;
+                }
+            }
+        }
+        return authorized;
+    }
+
+    @Override
     public String abbreviated() {
         return this.content.string("abbreviated");
     }

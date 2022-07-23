@@ -54,4 +54,16 @@ public final class YamlAgents implements Agents {
         }
         return items;
     }
+
+    @Override
+    public boolean has(final String address) {
+        boolean contain = false;
+        for (final Agent agent : this.iterate()) {
+            if (agent.address().equalsIgnoreCase(address)) {
+                contain = true;
+                break;
+            }
+        }
+        return contain;
+    }
 }

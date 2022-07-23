@@ -14,36 +14,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.endeavourmining.reportbot;
+package com.endeavourmining.reportbot.processor;
 
-import com.endeavourmining.reportbot.mail.EmailFileStorage;
+import com.endeavourmining.reportbot.mail.Email;
 import java.io.IOException;
-import java.nio.file.Path;
-import javax.mail.Folder;
-import javax.mail.Message;
 
 /**
- * Store the mail handled.
+ * Mail processor.
  *
  * @since 0.1
  */
-public final class StoreMail implements MailProcessor {
+public interface MailProcessor {
 
     /**
-     * Storage path.
+     * Process email.
+     * @param email Email
+     * @throws IOException If fails
      */
-    private final Path path;
-
-    /**
-     * Ctor.
-     * @param path Storage path
-     */
-    public StoreMail(final Path path) {
-        this.path = path;
-    }
-
-    @Override
-    public void process(final Message email, final Folder folder) throws IOException {
-        new EmailFileStorage(this.path).save(email, folder);
-    }
+    void process(Email email) throws IOException;
 }

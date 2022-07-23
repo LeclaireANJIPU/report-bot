@@ -18,12 +18,15 @@ package com.endeavourmining.reportbot.mail;
 
 import com.amihaiemil.eoyaml.Yaml;
 import com.amihaiemil.eoyaml.YamlMapping;
+import com.amihaiemil.eoyaml.extensions.MergedYamlMapping;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 /**
@@ -31,7 +34,18 @@ import java.util.stream.Collectors;
  *
  * @since 0.1
  */
+@SuppressWarnings(
+    {
+        "PMD.AvoidThrowingRawExceptionTypes", "PMD.TooManyMethods",
+        "PMD.AvoidFileStream"
+    }
+)
 public final class EmailFromPath implements Email {
+
+    /**
+     * Metadata file name.
+     */
+    private static final String METADATA_FILENAME = "metadata.yml";
 
     /**
      * Path.
@@ -41,7 +55,7 @@ public final class EmailFromPath implements Email {
     /**
      * Mail metadata.
      */
-    private final YamlMapping metadata;
+    private final AtomicReference<YamlMapping> metadata;
 
     /**
      * Ctor.
@@ -50,35 +64,49 @@ public final class EmailFromPath implements Email {
      */
     public EmailFromPath(final Path path) throws IOException {
         this.path = path;
-        this.metadata = Yaml.createYamlInput(
-            path.resolve("metadata.yml").toFile()
-        ).readYamlMapping();
+        this.metadata = new AtomicReference<>(
+            Yaml.createYamlInput(
+                path.resolve(EmailFromPath.METADATA_FILENAME).toFile()
+            ).readYamlMapping()
+        );
+    }
+
+    @Override
+    public Long uid() {
+        return this.metadata.get().longNumber("uid");
     }
 
     @Override
     public String from() {
-        return this.metadata.string("from");
+        return this.metadata.get().string("from");
     }
 
     @Override
     @SuppressWarnings("PMD.ShortMethodName")
     public String to() {
-        return this.metadata.string("to");
+        return this.metadata.get().string("to");
     }
 
     @Override
     public LocalDateTime sentDate() {
-        return this.metadata.dateTime("sent_date");
+        return this.metadata.get().dateTime("sent_date");
     }
 
     @Override
     public LocalDateTime receivedDate() {
-        return this.metadata.dateTime("received_date");
+        return this.metadata.get().dateTime("received_date");
     }
 
     @Override
     public String subject() {
-        return this.metadata.string("subject");
+        try {
+            return Files.readString(
+                this.path.resolve("subject.txt"),
+                StandardCharsets.UTF_8
+            );
+        } catch (final IOException ioe) {
+            throw new RuntimeException(ioe);
+        }
     }
 
     @Override
@@ -96,7 +124,7 @@ public final class EmailFromPath implements Email {
 
     @Override
     public Iterable<String> attachmentFilenames() {
-        return this.metadata.yamlSequence("attachments")
+        return this.metadata.get().yamlSequence("attachments")
             .values().stream().map(n -> n.asScalar().value())
             .collect(Collectors.toList());
     }
@@ -104,5 +132,30 @@ public final class EmailFromPath implements Email {
     @Override
     public InputStream load(final String filename) throws IOException {
         return null;
+    }
+
+    @Override
+    public void addCustomMetadata(final String name, final String value) throws IOException {
+        this.metadata.set(
+            new MergedYamlMapping(
+                Yaml.createYamlInput(
+                    this.path.resolve(EmailFromPath.METADATA_FILENAME).toFile()
+                ).readYamlMapping(),
+                () -> Yaml.createYamlMappingBuilder()
+                    .add(name, value)
+                    .build()
+            )
+        );
+        Yaml.createYamlPrinter(
+            new FileWriter(
+                this.path.resolve(EmailFromPath.METADATA_FILENAME).toFile(),
+                StandardCharsets.UTF_8
+            )
+        ).print(this.metadata.get());
+    }
+
+    @Override
+    public String customMetadata(final String name) throws IOException {
+        return this.metadata.get().string(name);
     }
 }

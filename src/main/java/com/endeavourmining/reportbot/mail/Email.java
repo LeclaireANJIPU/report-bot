@@ -25,7 +25,14 @@ import java.time.LocalDateTime;
  *
  * @since 0.1
  */
+@SuppressWarnings("PMD.TooManyMethods")
 public interface Email {
+
+    /**
+     * Get unique identifier.
+     * @return UID
+     */
+    Long uid();
 
     /**
      * From.
@@ -78,4 +85,20 @@ public interface Email {
      * @throws IOException If fails
      */
     InputStream load(String filename) throws IOException;
+
+    /**
+     * Add custom metadata.
+     * @param name Name
+     * @param value Value
+     * @throws IOException If fails
+     */
+    void addCustomMetadata(String name, String value) throws IOException;
+
+    /**
+     * Get a custom metadata.
+     * @param name Name
+     * @return Value
+     * @throws IOException If fails
+     */
+    String customMetadata(String name) throws IOException;
 }

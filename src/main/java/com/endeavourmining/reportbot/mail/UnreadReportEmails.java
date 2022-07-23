@@ -26,7 +26,7 @@ import java.util.Locale;
  *
  * @since 0.1
  */
-public final class UnreadReportEmails implements Mailbox {
+public final class UnreadReportEmails implements Emails {
 
     /**
      * Filter.
@@ -36,7 +36,7 @@ public final class UnreadReportEmails implements Mailbox {
     /**
      * Original mailbox.
      */
-    private final Mailbox origin;
+    private final Emails origin;
 
     /**
      * If filtered.
@@ -53,7 +53,7 @@ public final class UnreadReportEmails implements Mailbox {
      * @param filter Filter
      * @param origin Origin
      */
-    public UnreadReportEmails(final String filter, final Mailbox origin) {
+    public UnreadReportEmails(final String filter, final Emails origin) {
         this.filter = filter;
         this.origin = origin;
         this.filtered = false;

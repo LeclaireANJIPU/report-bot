@@ -16,6 +16,15 @@
  */
 package com.endeavourmining.reportbot;
 
+import com.endeavourmining.reportbot.mail.EmailFileStorage;
+import com.endeavourmining.reportbot.mail.MailConnector;
+import com.endeavourmining.reportbot.mail.RichTextMailReplier;
+import com.endeavourmining.reportbot.mail.SimpleMailConnector;
+import com.endeavourmining.reportbot.processor.CheckIfReportEmail;
+import com.endeavourmining.reportbot.processor.CheckSiteSenderAuthorization;
+import com.endeavourmining.reportbot.processor.IdentifySite;
+import com.endeavourmining.reportbot.processor.MailProcessorChain;
+import com.endeavourmining.reportbot.processor.ReplyAfterSendingReportMail;
 import com.endeavourmining.reportbot.settings.Settings;
 import com.endeavourmining.reportbot.settings.SettingsFromPath;
 import java.io.IOException;
@@ -25,6 +34,7 @@ import java.nio.file.Paths;
  * Entrance.
  *
  * @since 0.1
+ * @checkstyle ClassDataAbstractionCouplingCheck (500 lines)
  */
 @SuppressWarnings({"PMD.ProhibitPublicStaticMethods", "PMD.SystemPrintln"})
 public final class Main {
@@ -49,17 +59,30 @@ public final class Main {
                 System.getProperty("user.dir"), "settings.yml"
             )
         );
+        final MailConnector connector = new SimpleMailConnector(
+            settings.mailCredentials(), settings.mailSettings()
+        );
         while (true) {
             try {
                 new MailCrawler(
-                    settings.mailSettings(),
+                    connector,
+                    new EmailFileStorage(settings.storagePath()),
                     new MailProcessorChain(
-                        new StoreMail(settings.storagePath()),
-                        new ReplyAfterSendingReportMail(settings.mailCredentials()),
-                        new IdentifySiteProcessor(
-                            settings.storagePath(), settings.report(), settings.sites(),
-                            settings.mailCredentials()
+                        new CheckIfReportEmail(
+                            settings.report(),
+                            new MailProcessorChain(
+                                new IdentifySite(
+                                    settings.storagePath(), settings.sites()
+                                ),
+                                new CheckSiteSenderAuthorization(settings.sites()),
+                                new ReplyAfterSendingReportMail(
+                                    settings.mailCredentials(), connector
+                                )
+                            )
                         )
+                    ),
+                    new RichTextMailReplier(
+                        settings.mailCredentials().login()
                     )
                 ).start();
             } catch (final IOException ioe) {

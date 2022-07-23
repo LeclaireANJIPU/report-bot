@@ -14,37 +14,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.endeavourmining.reportbot.settings;
 
 /**
- * Site.
+ * Test for Mail processor classes.
  *
  * @since 0.1
  */
-public interface Site {
-
-    /**
-     * Abbreviated.
-     * @return Abbreviated
-     */
-    String abbreviated();
-
-    /**
-     * Name.
-     * @return Name
-     */
-    String name();
-
-    /**
-     * Agents.
-     * @return Agents
-     */
-    Agents agents();
-
-    /**
-     * Check if address is authorized.
-     * @param address Mail address
-     * @return Authorized or not
-     */
-    boolean authorize(String address);
-}
+package com.endeavourmining.reportbot.processor;
