@@ -22,6 +22,7 @@ import com.endeavourmining.reportbot.mail.RichTextMailReplier;
 import com.endeavourmining.reportbot.mail.SimpleMailConnector;
 import com.endeavourmining.reportbot.processor.CheckIfReportEmail;
 import com.endeavourmining.reportbot.processor.CheckSiteSenderAuthorization;
+import com.endeavourmining.reportbot.processor.CleanReport;
 import com.endeavourmining.reportbot.processor.ExtractWeekFromSubject;
 import com.endeavourmining.reportbot.processor.IdentifySite;
 import com.endeavourmining.reportbot.processor.MailProcessorChain;
@@ -77,6 +78,7 @@ public final class Main {
                                 ),
                                 new CheckSiteSenderAuthorization(settings.sites()),
                                 new ExtractWeekFromSubject(),
+                                new CleanReport(settings.report()),
                                 new ReplyAfterSendingReportMail(
                                     settings.mailCredentials(), connector
                                 )

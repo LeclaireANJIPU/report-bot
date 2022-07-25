@@ -19,6 +19,7 @@ package com.endeavourmining.reportbot;
 import com.endeavourmining.reportbot.mail.Email;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 
@@ -91,6 +92,16 @@ public final class FkEmail implements Email {
 
     @Override
     public String customMetadata(final String name) throws IOException {
+        return null;
+    }
+
+    @Override
+    public InputStream report() {
+        return null;
+    }
+
+    @Override
+    public OutputStream report(final String extension) {
         return null;
     }
 }

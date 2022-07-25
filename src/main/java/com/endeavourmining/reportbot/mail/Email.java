@@ -18,6 +18,7 @@ package com.endeavourmining.reportbot.mail;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.time.LocalDateTime;
 
 /**
@@ -101,4 +102,17 @@ public interface Email {
      * @throws IOException If fails
      */
     String customMetadata(String name) throws IOException;
+
+    /**
+     * Report input.
+     * @return Input stream
+     */
+    InputStream report();
+
+    /**
+     * Report output.
+     * @param extension Extension
+     * @return Output stream
+     */
+    OutputStream report(String extension);
 }

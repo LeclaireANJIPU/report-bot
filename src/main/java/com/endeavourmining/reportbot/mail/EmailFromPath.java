@@ -19,15 +19,21 @@ package com.endeavourmining.reportbot.mail;
 import com.amihaiemil.eoyaml.Yaml;
 import com.amihaiemil.eoyaml.YamlMapping;
 import com.amihaiemil.eoyaml.extensions.MergedYamlMapping;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Email from a path.
@@ -131,7 +137,7 @@ public final class EmailFromPath implements Email {
 
     @Override
     public InputStream load(final String filename) throws IOException {
-        return null;
+        return new FileInputStream(this.path.resolve(filename).toFile());
     }
 
     @Override
@@ -157,5 +163,33 @@ public final class EmailFromPath implements Email {
     @Override
     public String customMetadata(final String name) throws IOException {
         return this.metadata.get().string(name);
+    }
+
+    @Override
+    public InputStream report() {
+        try (Stream<Path> walk = Files.walk(this.path)) {
+            final Optional<Path> rpath = walk
+                .filter(
+                    p -> Files.isRegularFile(p)
+                        && p.toString().contains(String.format("report_%s", this.uid()))
+                ).findFirst();
+            if (rpath.isEmpty()) {
+                throw new IllegalArgumentException("The report hasn't been cleaned yet !");
+            }
+            return new FileInputStream(rpath.get().toFile());
+        } catch (final IOException ioe) {
+            throw new RuntimeException(ioe);
+        }
+    }
+
+    @Override
+    public OutputStream report(final String extension) {
+        try {
+            return new FileOutputStream(
+                this.path.resolve(String.format("report_%s.%s", this.uid(), extension)).toFile()
+            );
+        } catch (final FileNotFoundException fnf) {
+            throw new RuntimeException(fnf);
+        }
     }
 }
