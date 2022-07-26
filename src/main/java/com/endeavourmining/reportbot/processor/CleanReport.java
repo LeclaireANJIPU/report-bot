@@ -40,16 +40,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 public final class CleanReport implements MailProcessor {
 
     /**
-     * Physicals plan.
-     */
-    private static final String PHYSICALS_PLAN = "Physicals Plan";
-
-    /**
-     * Physicals actual.
-     */
-    private static final String PHYSICALS_ACTUAL = "Physicals Actual";
-
-    /**
      * Report settings.
      */
     private final ReportSettings rsettings;
@@ -90,8 +80,8 @@ public final class CleanReport implements MailProcessor {
                 while (report.getNumberOfSheets() > 2) {
                     for (int idx = 0; idx < report.getNumberOfSheets(); idx = idx + 1) {
                         if (
-                            !report.getSheetName(idx).equals(CleanReport.PHYSICALS_PLAN)
-                                && !report.getSheetName(idx).equals(CleanReport.PHYSICALS_ACTUAL)
+                            !report.getSheetName(idx).equals(ReportSettings.PHYSICALS_PLAN)
+                                && !report.getSheetName(idx).equals(ReportSettings.PHYSICALS_ACTUAL)
                         ) {
                             report.removeSheetAt(idx);
                             break;
@@ -108,8 +98,8 @@ public final class CleanReport implements MailProcessor {
                 } else {
                     for (int idx = 0; idx < report.getNumberOfSheets(); idx = idx + 1) {
                         if (
-                            !report.getSheetName(idx).equals(CleanReport.PHYSICALS_PLAN)
-                                && !report.getSheetName(idx).equals(CleanReport.PHYSICALS_ACTUAL)
+                            !report.getSheetName(idx).equals(ReportSettings.PHYSICALS_PLAN)
+                                && !report.getSheetName(idx).equals(ReportSettings.PHYSICALS_ACTUAL)
                         ) {
                             throw new IllegalArgumentException(
                                 String.join(
@@ -117,15 +107,15 @@ public final class CleanReport implements MailProcessor {
                                     String.format(
                                         // @checkstyle LineLengthCheck (1 line)
                                         "The two required sheets have to be named <b>%s</b> and <b>%s</b>. :-( <br>",
-                                        CleanReport.PHYSICALS_PLAN,
-                                        CleanReport.PHYSICALS_ACTUAL
+                                        ReportSettings.PHYSICALS_PLAN,
+                                        ReportSettings.PHYSICALS_ACTUAL
                                     )
                                 )
                             );
                         }
                     }
-                    if (report.getSheetName(0).equals(CleanReport.PHYSICALS_ACTUAL)) {
-                        report.setSheetOrder(CleanReport.PHYSICALS_PLAN, 0);
+                    if (report.getSheetName(0).equals(ReportSettings.PHYSICALS_ACTUAL)) {
+                        report.setSheetOrder(ReportSettings.PHYSICALS_PLAN, 0);
                     }
                     try (OutputStream output = email.report(this.rsettings.extension())) {
                         report.write(output);

@@ -8,3 +8,4 @@ target/
 /settings.yml
 /emails/
 .report-bot.iml
+shared

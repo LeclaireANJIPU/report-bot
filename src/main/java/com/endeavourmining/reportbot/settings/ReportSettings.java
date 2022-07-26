@@ -24,6 +24,16 @@ package com.endeavourmining.reportbot.settings;
 public interface ReportSettings {
 
     /**
+     * Physicals plan.
+     */
+    String PHYSICALS_PLAN = "Physicals Plan";
+
+    /**
+     * Physicals actual.
+     */
+    String PHYSICALS_ACTUAL = "Physicals Actual";
+
+    /**
      * Extension authorized.
      * @return Extension
      */
