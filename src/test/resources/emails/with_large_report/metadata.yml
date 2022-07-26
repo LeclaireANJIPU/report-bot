@@ -1,0 +1,6 @@
+uid: 1
+sent_date: "2022-07-23T16:08:47"
+received_date: "2022-07-23T16:09:05"
+from: "foo@example.com"
+attachments:
+  - large_report.xlsx

@@ -1,14 +1,28 @@
-settings:
-  mailbox:
-    address: foo@example.com
-    credentials:
-      login: foo
-      password: 123
-    smtp_server:
-      host: localhost
-      ssl_tls: true
-      port: 465
-    imap_server:
-      host: localhost
-      ssl_tls: true
-      port: 993
+---------
+version: 1.0
+mailbox:
+  address: foo@example.com
+  credentials:
+    login: foo
+    password: 123
+  smtp_server:
+    host: localhost
+    authentication_type: starttls # tls, ssl or no (no authentication)
+    port: 587
+  imap_server:
+    host: localhost
+    authentication_type: ssl # tls or no (no authentication)
+    port: 993
+report:
+  extension: xlsx
+  suffix: _WeeklyActualandPlans
+sites:
+  - site: Site tantanpion
+    abbreviated: STAN
+    agents:
+      - agent: Toto BRABRA
+        mail_address: toto.brabra@example.com
+      - agent: Tata ROCO
+        mail_address: tata.roco@example.com
+storage:
+  path: "emails" # relative or absolute path

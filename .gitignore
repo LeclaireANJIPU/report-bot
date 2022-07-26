@@ -6,4 +6,6 @@ target/
 .project
 .settings/**
 /settings.yml
+/emails/
 .report-bot.iml
+shared

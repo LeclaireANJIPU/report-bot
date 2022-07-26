@@ -17,23 +17,50 @@
 Report Bot is a bot that automates data integration of an Excel report file sent by email into a Power BI dashboard.
 
 ## Application configuration
-Put at the root folder, the configuration file `settings.yml` with content:
+Put at the root folder, the configuration file `settings.yml` with content structured like this sample:
+
 ```yaml
-settings:
-  mailbox: # Bot mailbox settings
-    address: foo@example.com
-    credentials:
-      login: foo
-      password: 123
-    smtp_server:
-      host: localhost
-      ssl_tls: true
-      port: 465
-    imap_server:
-      host: localhost
-      ssl_tls: true
-      port: 993
+---------
+version: 1.0
+mailbox:
+  address: foo@example.com
+  credentials:
+    login: foo
+    password: 123
+  smtp_server:
+    host: localhost
+    authentication_type: starttls # tls, ssl or no (no authentication)
+    port: 587
+  imap_server:
+    host: localhost
+    authentication_type: ssl # tls or no (no authentication)
+    port: 993
+report:
+  extension: xlsx
+  suffix: _WeeklyActualandPlans
+sites:
+  - site: "Site tantanpion"
+    abbreviated: STAN
+    agents:
+      - agent: "Toto BRABRA"
+        mail_address: toto.brabra@example.com
+      - agent: "Tata ROCO"
+        mail_address: tata.roco@example.com
+storage:
+  path: "emails" # relative or absolute path
 ```
+
+The storage for mail contains folders :
+- `to_treat`: contains new incoming emails
+- `done`: contains emails have been successfully treated
+- `error`: contains emails that failed to be treated
+
+## Structure of an email folder in the storage
+An email loaded by the Bot is saved in a folder (with UUID name) structured like this :
+- `metadata.yml`: YAML file that contains mail metadata
+- `subject.txt`: Subject
+- `content.txt`: Text content
+- List of attachments
 
 ## Run Bot locally
 You have to execute this Maven command:
