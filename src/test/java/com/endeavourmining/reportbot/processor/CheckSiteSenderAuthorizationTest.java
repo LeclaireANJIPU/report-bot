@@ -58,10 +58,11 @@ final class CheckSiteSenderAuthorizationTest {
 
     @BeforeEach
     void setUp() throws IOException {
+        final AvailablePort port = new AvailablePort();
         this.server = new GreenMail(
             new ServerSetup[] {
-                ServerSetup.SMTP.withPort(new AvailablePort().intValue()),
-                ServerSetup.IMAP.withPort(new AvailablePort().intValue()),
+                ServerSetup.SMTP.withPort(port.intValue()),
+                ServerSetup.IMAP.withPort(port.intValue()),
             }
         );
         this.server.start();
