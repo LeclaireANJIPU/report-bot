@@ -43,6 +43,16 @@ public final class AvailablePort extends Number implements Comparable<AvailableP
     private static final int DEFAULT_MAX_PORT = 2000;
 
     /**
+     * Minimum accepted port value.
+     */
+    private static final int MIN_ACCEPTED_PORT = 22;
+
+    /**
+     * Maximum accepted port value.
+     */
+    private static final int MAX_ACCEPTED_PORT = 99_999;
+
+    /**
      * Port.
      */
     private final int port;
@@ -106,10 +116,14 @@ public final class AvailablePort extends Number implements Comparable<AvailableP
      * @return Port
      * @throws IOException If fails
      */
+    @SuppressWarnings("PMD.CyclomaticComplexity")
     private static int generate(final int min, final int max) throws IOException {
-        if (min <= 0 || max <= 0) {
+        if (min < AvailablePort.MIN_ACCEPTED_PORT || max < AvailablePort.MIN_ACCEPTED_PORT) {
             throw new IllegalArgumentException(
-                "Port range must only contain positive ports !"
+                String.format(
+                    "Port must be greater or equal to %s !",
+                    AvailablePort.MIN_ACCEPTED_PORT
+                )
             );
         }
         if (min > max) {
@@ -117,10 +131,15 @@ public final class AvailablePort extends Number implements Comparable<AvailableP
                 "Port range: minimum port must be less than maximum port !"
             );
         }
+        if (min > AvailablePort.MAX_ACCEPTED_PORT || max > AvailablePort.MAX_ACCEPTED_PORT) {
+            throw new IllegalArgumentException(
+                "Port must be less or equal to 99999 !"
+            );
+        }
         final Random random = new Random();
         do {
             try (ServerSocket srv =
-                new ServerSocket(random.nextInt(max - min + 1) + max)) {
+                new ServerSocket(random.nextInt(max - min) + min)) {
                 return srv.getLocalPort();
             }
         } while (true);
